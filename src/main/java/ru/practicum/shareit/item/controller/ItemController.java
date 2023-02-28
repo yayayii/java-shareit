@@ -16,8 +16,9 @@ public class ItemController {
 
     //create
     @PostMapping
-    Item addItem(@Valid @RequestBody Item item) {
-        return itemService.addItem(item);
+    Item addItem(@Valid @RequestBody Item item,
+                 @RequestHeader("X-Sharer-User-Id") int ownerId) {
+        return itemService.addItem(item, ownerId);
     }
     //read
     @GetMapping("/{itemId}")
@@ -31,8 +32,9 @@ public class ItemController {
     //update
     @PatchMapping("/{itemId}")
     Item updateItem(@PathVariable int itemId,
-                    @RequestBody Item item) {
-        return itemService.updateItem(itemId, item);
+                    @RequestBody Item item,
+                    @RequestHeader("X-Sharer-User-Id") int ownerId) {
+        return itemService.updateItem(itemId, item, ownerId);
     }
     //delete
     @DeleteMapping("/{itemId}")

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.validation.ItemValidator;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.Collection;
 
@@ -15,12 +16,13 @@ import java.util.Collection;
 public class ItemServiceImpl implements ItemService {
     private final ItemValidator itemValidator;
     private final ItemStorage itemStorage;
+    private final UserStorage userStorage;
 
     //create
     @Override
-    public Item addItem(Item item) {
-        itemValidator.validateNewItem(item);
-        return itemStorage.addItem(item);
+    public Item addItem(Item item, int ownerId) {
+        itemValidator.validateNewItem(item, ownerId);
+        return itemStorage.addItem(item, userStorage.getUser(ownerId));
     }
     //read
     @Override
@@ -34,15 +36,15 @@ public class ItemServiceImpl implements ItemService {
     }
     //update
     @Override
-    public Item updateItem(int itemId, Item item) {
+    public Item updateItem(int itemId, Item item, int ownerId) {
         if (item.getName() == null && item.getDescription() == null && item.getAvailable() == null) {
             RuntimeException exception = new NullPointerException("There is nothing to update.");
             log.warn(exception.getMessage());
             throw exception;
         }
         itemValidator.validateId(itemId);
-        itemValidator.validateUpdatedItem(itemId, item);
-        return itemStorage.updateItem(itemId, item);
+        itemValidator.validateUpdatedItem(itemId, item, ownerId);
+        return itemStorage.updateItem(itemId, item, userStorage.getUser(ownerId));
     }
     //delete
     @Override

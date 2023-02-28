@@ -1,22 +1,27 @@
 package ru.practicum.shareit.item.storage;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@AllArgsConstructor
 @Slf4j
 @Component
 public class ItemStorageInMemory implements ItemStorage {
     private static int id = 0;
+
     private final Map<Integer, Item> items = new HashMap<>();
 
     //create
     @Override
-    public Item addItem(Item item) {
+    public Item addItem(Item item, User owner) {
         item.setId(++id);
+        item.setOwner(owner);
         items.put(id, item);
         log.info("Item " + id + " was added.");
         return item;
@@ -32,7 +37,7 @@ public class ItemStorageInMemory implements ItemStorage {
     }
     //update
     @Override
-    public Item updateItem(int itemId, Item item) {
+    public Item updateItem(int itemId, Item item, User owner) {
         Item otherItem = items.get(itemId);
         if (item.getName() != null) {
             otherItem.setName(item.getName());
@@ -43,8 +48,10 @@ public class ItemStorageInMemory implements ItemStorage {
         if (item.getAvailable() != null) {
             otherItem.setAvailable(item.getAvailable());
         }
+        item.setOwner(owner);
+
         log.info("Item " + itemId + " was updated.");
-        return null;
+        return otherItem;
     }
     //delete
     @Override

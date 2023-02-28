@@ -3,9 +3,11 @@ package ru.practicum.shareit.item.validation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.exception.ForbiddenActionException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
+import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.NoSuchElementException;
 
@@ -14,14 +16,20 @@ import java.util.NoSuchElementException;
 @Component
 public class ItemValidator {
     private final ItemStorage itemStorage;
+    private final UserValidator userValidator;
 
-    public void validateNewItem(Item item) {
+    public void validateNewItem(Item item, int ownerId) {
+        userValidator.validateId(ownerId);
         for (Item otherItem: itemStorage.getAllItems().values()) {
             validateName(item, otherItem);
         }
     }
 
-    public void validateUpdatedItem(int itemId, Item item) {
+    public void validateUpdatedItem(int itemId, Item item, int ownerId) {
+        if (ownerId != itemStorage.getItem(itemId).getOwner().getId()) {
+            throw new ForbiddenActionException("Changing owner is forbidden.");
+        }
+
         for (Item otherItem: itemStorage.getAllItems().values()) {
             if (otherItem.getId() != itemId) {
                 if (item.getName() != null) {
