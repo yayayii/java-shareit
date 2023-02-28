@@ -12,8 +12,7 @@ import java.util.*;
 @Slf4j
 @Component
 public class ItemStorageInMemory implements ItemStorage {
-    private static int ID = 0;
-
+    private int ID;
     private final Map<Integer, Item> items = new HashMap<>();
 
     //create

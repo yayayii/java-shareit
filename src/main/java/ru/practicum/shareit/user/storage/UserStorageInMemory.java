@@ -14,7 +14,7 @@ import java.util.Map;
 @Slf4j
 @Component
 public class UserStorageInMemory implements UserStorage {
-    private static int ID = 0;
+    private int ID;
 
     private final ItemStorage itemStorage;
     private final Map<Integer, User> users = new HashMap<>();
