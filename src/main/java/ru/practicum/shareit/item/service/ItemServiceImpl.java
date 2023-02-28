@@ -10,6 +10,7 @@ import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @AllArgsConstructor
 @Slf4j
@@ -40,6 +41,13 @@ public class ItemServiceImpl implements ItemService {
             userValidator.validateId(ownerId);
             return itemStorage.getAllItems(ownerId);
         }
+    }
+    @Override
+    public Collection<Item> getSearchedItems(String searchText) {
+        if (searchText.isEmpty() || searchText.isBlank()) {
+            return Collections.emptyList();
+        }
+        return itemStorage.getSearchedItems(searchText);
     }
     //update
     @Override

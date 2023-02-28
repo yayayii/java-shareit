@@ -13,6 +13,7 @@ public interface ItemStorage {
     Item getItem(int itemId);
     Map<Integer, Item> getAllItems();
     Collection<Item> getAllItems(int ownerId);
+    Collection<Item> getSearchedItems(String searchText);
     //update
     Item updateItem(int itemId, Item item, User owner);
     //delete

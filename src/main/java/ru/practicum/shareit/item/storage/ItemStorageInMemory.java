@@ -44,6 +44,18 @@ public class ItemStorageInMemory implements ItemStorage {
         }
         return itemList;
     }
+    @Override
+    public Collection<Item> getSearchedItems(String searchText) {
+        List<Item> itemList = new ArrayList<>();
+        for (Item item: items.values()) {
+            if (item.getAvailable() &&
+                    (item.getName().toLowerCase().contains(searchText.toLowerCase()) ||
+                    item.getDescription().toLowerCase().contains(searchText.toLowerCase()))) {
+                itemList.add(item);
+            }
+        }
+        return itemList;
+    }
     //update
     @Override
     public Item updateItem(int itemId, Item item, User owner) {

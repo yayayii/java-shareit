@@ -30,6 +30,10 @@ public class ItemController {
             @RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0") int ownerId) {
         return itemService.getAllItems(ownerId);
     }
+    @GetMapping("/search")
+    Collection<Item> getSearchedItems(@RequestParam("text") String searchText) {
+        return itemService.getSearchedItems(searchText);
+    }
     //update
     @PatchMapping("/{itemId}")
     Item updateItem(@PathVariable int itemId,
