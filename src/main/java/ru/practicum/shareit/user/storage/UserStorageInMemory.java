@@ -1,6 +1,6 @@
 package ru.practicum.shareit.user.storage;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
@@ -10,12 +10,11 @@ import ru.practicum.shareit.user.model.User;
 import java.util.HashMap;
 import java.util.Map;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 @Component
 public class UserStorageInMemory implements UserStorage {
     private int id;
-
     private final ItemStorage itemStorage;
     private final Map<Integer, User> users = new HashMap<>();
 
