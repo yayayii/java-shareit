@@ -25,15 +25,18 @@ public class ItemStorageInMemory implements ItemStorage {
         log.info("Item " + id + " was added.");
         return item;
     }
+
     //read
     @Override
     public Item getItem(int itemId) {
         return items.get(itemId);
     }
+
     @Override
     public Map<Integer, Item> getAllItems() {
         return items;
     }
+
     @Override
     public Collection<Item> getAllItems(int ownerId) {
         List<Item> itemList = new ArrayList<>();
@@ -44,6 +47,7 @@ public class ItemStorageInMemory implements ItemStorage {
         }
         return itemList;
     }
+
     @Override
     public Collection<Item> getSearchedItems(String searchText) {
         List<Item> itemList = new ArrayList<>();
@@ -56,6 +60,7 @@ public class ItemStorageInMemory implements ItemStorage {
         }
         return itemList;
     }
+
     //update
     @Override
     public Item updateItem(int itemId, Item item, User owner) {
@@ -74,12 +79,14 @@ public class ItemStorageInMemory implements ItemStorage {
         log.info("Item " + itemId + " was updated.");
         return otherItem;
     }
+
     //delete
     @Override
     public void deleteItem(int itemId) {
         items.remove(itemId);
         log.info("Item " + itemId + " was deleted.");
     }
+
     @Override
     public void deleteAllItems() {
         items.clear();

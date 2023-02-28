@@ -27,15 +27,18 @@ public class UserStorageInMemory implements UserStorage {
         log.info("User " + id + " was added.");
         return user;
     }
+
     //read
     @Override
     public User getUser(int userId) {
         return users.get(userId);
     }
+
     @Override
     public Map<Integer, User> getAllUsers() {
         return users;
     }
+
     //update
     @Override
     public User updateUser(int userId, User user) {
@@ -49,6 +52,7 @@ public class UserStorageInMemory implements UserStorage {
         log.info("User " + userId + " was updated.");
         return otherUser;
     }
+
     //delete
     @Override
     public void deleteUser(int userId) {
@@ -60,6 +64,7 @@ public class UserStorageInMemory implements UserStorage {
         users.remove(userId);
         log.info("User " + userId + " was deleted.");
     }
+
     @Override
     public void deleteAllUsers() {
         users.clear();

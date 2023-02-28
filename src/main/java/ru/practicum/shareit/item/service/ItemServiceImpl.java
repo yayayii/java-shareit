@@ -27,12 +27,14 @@ public class ItemServiceImpl implements ItemService {
         itemValidator.validateNewItem(item, ownerId);
         return itemStorage.addItem(item, userStorage.getUser(ownerId));
     }
+
     //read
     @Override
     public Item getItem(int itemId) {
         itemValidator.validateId(itemId);
         return itemStorage.getItem(itemId);
     }
+
     @Override
     public Collection<Item> getAllItems(int ownerId) {
         if (ownerId == 0) {
@@ -42,6 +44,7 @@ public class ItemServiceImpl implements ItemService {
             return itemStorage.getAllItems(ownerId);
         }
     }
+
     @Override
     public Collection<Item> getSearchedItems(String searchText) {
         if (searchText.isEmpty() || searchText.isBlank()) {
@@ -49,6 +52,7 @@ public class ItemServiceImpl implements ItemService {
         }
         return itemStorage.getSearchedItems(searchText);
     }
+
     //update
     @Override
     public Item updateItem(int itemId, Item item, int ownerId) {
@@ -61,12 +65,14 @@ public class ItemServiceImpl implements ItemService {
         itemValidator.validateUpdatedItem(itemId, item, ownerId);
         return itemStorage.updateItem(itemId, item, userStorage.getUser(ownerId));
     }
+
     //delete
     @Override
     public void deleteItem(int itemId) {
         itemValidator.validateId(itemId);
         itemStorage.deleteItem(itemId);
     }
+
     @Override
     public void deleteAllItems() {
         itemStorage.deleteAllItems();

@@ -19,26 +19,31 @@ public class UserController {
     User addUser(@Valid @RequestBody User user) {
         return userService.addUser(user);
     }
+
     //read
     @GetMapping("/{userId}")
     User getUser(@PathVariable int userId) {
         return userService.getUser(userId);
     }
+
     @GetMapping
     Collection<User> getAllUsers() {
         return userService.getAllUsers();
     }
+
     //update
     @PatchMapping("/{userId}")
     User updateUser(@PathVariable int userId,
                     @RequestBody User user) {
         return userService.updateUser(userId, user);
     }
+
     //delete
     @DeleteMapping("/{userId}")
     void deleteUser(@PathVariable int userId) {
         userService.deleteUser(userId);
     }
+
     @DeleteMapping
     void deleteAllUsers() {
         userService.deleteAllUsers();

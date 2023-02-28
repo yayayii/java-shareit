@@ -22,16 +22,19 @@ public class UserServiceImpl implements UserService {
         userValidator.validateNewUser(user);
         return userStorage.addUser(user);
     }
+
     //read
     @Override
     public User getUser(int userId) {
         userValidator.validateId(userId);
         return userStorage.getUser(userId);
     }
+
     @Override
     public Collection<User> getAllUsers() {
         return userStorage.getAllUsers().values();
     }
+
     //update
     @Override
     public User updateUser(int userId, User user) {
@@ -44,12 +47,14 @@ public class UserServiceImpl implements UserService {
         userValidator.validateUpdatedUser(userId, user);
         return userStorage.updateUser(userId, user);
     }
+
     //delete
     @Override
     public void deleteUser(int userId) {
         userValidator.validateId(userId);
         userStorage.deleteUser(userId);
     }
+
     @Override
     public void deleteAllUsers() {
         userStorage.deleteAllUsers();

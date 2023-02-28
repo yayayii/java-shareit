@@ -20,20 +20,24 @@ public class ItemController {
                  @RequestHeader("X-Sharer-User-Id") int ownerId) {
         return itemService.addItem(item, ownerId);
     }
+
     //read
     @GetMapping("/{itemId}")
     Item getItem(@PathVariable int itemId) {
         return itemService.getItem(itemId);
     }
+
     @GetMapping
     Collection<Item> getAllItems(
             @RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0") int ownerId) {
         return itemService.getAllItems(ownerId);
     }
+
     @GetMapping("/search")
     Collection<Item> getSearchedItems(@RequestParam("text") String searchText) {
         return itemService.getSearchedItems(searchText);
     }
+
     //update
     @PatchMapping("/{itemId}")
     Item updateItem(@PathVariable int itemId,
@@ -41,11 +45,13 @@ public class ItemController {
                     @RequestHeader("X-Sharer-User-Id") int ownerId) {
         return itemService.updateItem(itemId, item, ownerId);
     }
+
     //delete
     @DeleteMapping("/{itemId}")
     void deleteItem(@PathVariable int itemId) {
         itemService.deleteItem(itemId);
     }
+
     @DeleteMapping
     void deleteAllItems() {
         itemService.deleteAllItems();
