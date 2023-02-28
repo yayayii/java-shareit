@@ -12,17 +12,17 @@ import java.util.*;
 @Slf4j
 @Component
 public class ItemStorageInMemory implements ItemStorage {
-    private static int id = 0;
+    private static int ID = 0;
 
     private final Map<Integer, Item> items = new HashMap<>();
 
     //create
     @Override
     public Item addItem(Item item, User owner) {
-        item.setId(++id);
+        item.setId(++ID);
         item.setOwner(owner);
-        items.put(id, item);
-        log.info("Item " + id + " was added.");
+        items.put(ID, item);
+        log.info("Item " + ID + " was added.");
         return item;
     }
 
