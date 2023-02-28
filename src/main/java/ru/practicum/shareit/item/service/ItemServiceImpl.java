@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.validation.ItemValidator;
 import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.Collection;
 
@@ -15,6 +16,7 @@ import java.util.Collection;
 @Service
 public class ItemServiceImpl implements ItemService {
     private final ItemValidator itemValidator;
+    private final UserValidator userValidator;
     private final ItemStorage itemStorage;
     private final UserStorage userStorage;
 
@@ -31,8 +33,13 @@ public class ItemServiceImpl implements ItemService {
         return itemStorage.getItem(itemId);
     }
     @Override
-    public Collection<Item> getAllItems() {
-        return itemStorage.getAllItems().values();
+    public Collection<Item> getAllItems(int ownerId) {
+        if (ownerId == 0) {
+            return itemStorage.getAllItems().values();
+        } else {
+            userValidator.validateId(ownerId);
+            return itemStorage.getAllItems(ownerId);
+        }
     }
     //update
     @Override

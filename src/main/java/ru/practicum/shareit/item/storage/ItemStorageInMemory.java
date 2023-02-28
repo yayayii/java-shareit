@@ -6,8 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @AllArgsConstructor
 @Slf4j
@@ -34,6 +33,16 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public Map<Integer, Item> getAllItems() {
         return items;
+    }
+    @Override
+    public Collection<Item> getAllItems(int ownerId) {
+        List<Item> itemList = new ArrayList<>();
+        for (Item item: items.values()) {
+            if (item.getOwner().getId() == ownerId) {
+                itemList.add(item);
+            }
+        }
+        return itemList;
     }
     //update
     @Override

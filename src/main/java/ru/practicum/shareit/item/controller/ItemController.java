@@ -26,8 +26,9 @@ public class ItemController {
         return itemService.getItem(itemId);
     }
     @GetMapping
-    Collection<Item> getAllItems() {
-        return itemService.getAllItems();
+    Collection<Item> getAllItems(
+            @RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0") int ownerId) {
+        return itemService.getAllItems(ownerId);
     }
     //update
     @PatchMapping("/{itemId}")

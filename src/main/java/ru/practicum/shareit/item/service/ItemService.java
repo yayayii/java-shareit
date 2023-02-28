@@ -9,7 +9,7 @@ public interface ItemService {
     Item addItem(Item item, int ownerId);
     //read
     Item getItem(int itemId);
-    Collection<Item> getAllItems();
+    Collection<Item> getAllItems(int ownerId);
     //update
     Item updateItem(int itemId, Item item, int ownerId);
     //delete
