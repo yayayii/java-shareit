@@ -16,29 +16,45 @@ public class ItemStorageInMemory implements ItemStorage {
     //create
     @Override
     public Item addItem(Item item) {
-        return null;
+        item.setId(++id);
+        items.put(id, item);
+        log.info("Item " + id + " was added.");
+        return item;
     }
     //read
     @Override
     public Item getItem(int itemId) {
-        return null;
+        return items.get(itemId);
     }
     @Override
     public Map<Integer, Item> getAllItems() {
-        return null;
+        return items;
     }
     //update
     @Override
     public Item updateItem(int itemId, Item item) {
+        Item otherItem = items.get(itemId);
+        if (item.getName() != null) {
+            otherItem.setName(item.getName());
+        }
+        if (item.getDescription() != null) {
+            otherItem.setDescription(item.getDescription());
+        }
+        if (item.getAvailable() != null) {
+            otherItem.setAvailable(item.getAvailable());
+        }
+        log.info("Item " + itemId + " was updated.");
         return null;
     }
     //delete
     @Override
     public void deleteItem(int itemId) {
-
+        items.remove(itemId);
+        log.info("Item " + itemId + " was deleted.");
     }
     @Override
     public void deleteAllItems() {
-
+        items.clear();
+        log.info("Item storage was cleared");
     }
 }

@@ -19,29 +19,39 @@ public class ItemServiceImpl implements ItemService {
     //create
     @Override
     public Item addItem(Item item) {
-        return null;
+        itemValidator.validateNewItem(item);
+        return itemStorage.addItem(item);
     }
     //read
     @Override
     public Item getItem(int itemId) {
-        return null;
+        itemValidator.validateId(itemId);
+        return itemStorage.getItem(itemId);
     }
     @Override
     public Collection<Item> getAllItems() {
-        return null;
+        return itemStorage.getAllItems().values();
     }
     //update
     @Override
     public Item updateItem(int itemId, Item item) {
-        return null;
+        if (item.getName() == null && item.getDescription() == null && item.getAvailable() == null) {
+            RuntimeException exception = new NullPointerException("There is nothing to update.");
+            log.warn(exception.getMessage());
+            throw exception;
+        }
+        itemValidator.validateId(itemId);
+        itemValidator.validateUpdatedItem(itemId, item);
+        return itemStorage.updateItem(itemId, item);
     }
     //delete
     @Override
     public void deleteItem(int itemId) {
-
+        itemValidator.validateId(itemId);
+        itemStorage.deleteItem(itemId);
     }
     @Override
     public void deleteAllItems() {
-
+        itemStorage.deleteAllItems();
     }
 }

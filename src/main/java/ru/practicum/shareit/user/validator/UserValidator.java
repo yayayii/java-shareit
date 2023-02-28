@@ -45,7 +45,7 @@ public class UserValidator {
 
     private void validateName(User user, User otherUser) {
         if (user.getName().equals(otherUser.getName())) {
-            RuntimeException exception = new ValidationException("User with name " + user.getName() + " already exists.");
+            RuntimeException exception = new ValidationException("User with name \"" + user.getName() + "\" already exists.");
             log.warn(exception.getMessage());
             throw exception;
         }
@@ -53,7 +53,7 @@ public class UserValidator {
 
     private void validateEmail(User user, User otherUser) {
         if (user.getEmail().equals(otherUser.getEmail())) {
-            RuntimeException exception = new ValidationException("User with email " + user.getEmail() + " already exists.");
+            RuntimeException exception = new ValidationException("User with email \"" + user.getEmail() + "\" already exists.");
             log.warn(exception.getMessage());
             throw exception;
         }
