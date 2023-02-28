@@ -2,16 +2,16 @@ package ru.practicum.shareit.user.storage;
 
 import ru.practicum.shareit.user.model.User;
 
-import java.util.Collection;
+import java.util.Map;
 
 public interface UserStorage {
     //create
     User addUser(User user);
     //read
     User getUser(int userId);
-    Collection<User> getAllUsers();
+    Map<Integer, User> getAllUsers();
     //update
-    User updateUser(User user);
+    User updateUser(int userId, User user);
     //delete
     void deleteUser(int userId);
     void deleteAllUsers();

@@ -5,11 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
-/**
- * TODO Sprint add-controllers.
- */
 @AllArgsConstructor
 @RestController
 @RequestMapping(path = "/users")
@@ -17,7 +15,7 @@ public class UserController {
     private final UserService userService;
     //create
     @PostMapping
-    User addUser(@RequestBody User user) {
+    User addUser(@Valid @RequestBody User user) {
         return userService.addUser(user);
     }
     //read
@@ -30,9 +28,10 @@ public class UserController {
         return userService.getAllUsers();
     }
     //update
-    @PatchMapping
-    User updateUser(@RequestBody User user) {
-        return userService.updateUser(user);
+    @PatchMapping("/{userId}")
+    User updateUser(@PathVariable int userId,
+                    @RequestBody User user) {
+        return userService.updateUser(userId, user);
     }
     //delete
     @DeleteMapping("/{userId}")

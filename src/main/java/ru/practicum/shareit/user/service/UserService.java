@@ -11,7 +11,7 @@ public interface UserService {
     User getUser(int userId);
     Collection<User> getAllUsers();
     //update
-    User updateUser(User user);
+    User updateUser(int userId, User user);
     //delete
     void deleteUser(int userId);
     void deleteAllUsers();
