@@ -50,12 +50,12 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Collection<ItemDto> getAllItems(int ownerId) {
         if (ownerId == 0) {
-            return itemStorage.getAllItems().values().
-                    stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
+            return itemStorage.getAllItems().values()
+                    .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
         } else {
             userValidator.validateId(ownerId);
-            return itemStorage.getAllItems(ownerId, userStorage.getUser(ownerId).getItemIds()).
-                    stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
+            return itemStorage.getAllItems(ownerId, userStorage.getUser(ownerId).getItemIds())
+                    .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
         }
     }
 
@@ -64,8 +64,8 @@ public class ItemServiceImpl implements ItemService {
         if (searchText.isEmpty() || searchText.isBlank()) {
             return Collections.emptyList();
         }
-        return itemStorage.getSearchedItems(searchText).
-                stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
+        return itemStorage.getSearchedItems(searchText)
+                .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
     }
 
     //update

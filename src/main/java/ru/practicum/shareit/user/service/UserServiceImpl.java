@@ -38,8 +38,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<UserDto> getAllUsers() {
-        return userStorage.getAllUsers().values().
-                stream().map(UserMapper::toUserDto).collect(Collectors.toCollection(TreeSet::new));
+        return userStorage.getAllUsers().values()
+                .stream().map(UserMapper::toUserDto).collect(Collectors.toCollection(TreeSet::new));
     }
 
     //update
