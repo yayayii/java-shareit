@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.validation.ItemValidator;
@@ -24,8 +25,9 @@ public class ItemServiceImpl implements ItemService {
     //create
     @Override
     public Item addItem(Item item, int ownerId) {
-        itemValidator.validateNewItem(item, ownerId);
-        return itemStorage.addItem(item, userStorage.getUser(ownerId));
+        userValidator.validateId(ownerId);
+        item.setOwner(userStorage.getUser(ownerId));
+        return itemStorage.addItem(item);
     }
 
     //read
@@ -57,13 +59,15 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item updateItem(int itemId, Item item, int ownerId) {
         if (item.getName() == null && item.getDescription() == null && item.getAvailable() == null) {
-            RuntimeException exception = new NullPointerException("There is nothing to update.");
+            RuntimeException exception = new ValidationException("There is nothing to update.");
             log.warn(exception.getMessage());
             throw exception;
         }
-        itemValidator.validateId(itemId);
-        itemValidator.validateUpdatedItem(itemId, item, ownerId);
-        return itemStorage.updateItem(itemId, item, userStorage.getUser(ownerId));
+        itemValidator.validateUpdatedItem(itemId, ownerId);
+
+        item.setId(itemId);
+        item.setOwner(userStorage.getUser(ownerId));
+        return itemStorage.updateItem(item);
     }
 
     //delete

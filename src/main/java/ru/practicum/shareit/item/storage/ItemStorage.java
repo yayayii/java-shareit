@@ -1,14 +1,13 @@
 package ru.practicum.shareit.item.storage;
 
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.Collection;
 import java.util.Map;
 
 public interface ItemStorage {
     //create
-    Item addItem(Item item, User owner);
+    Item addItem(Item item);
 
     //read
     Item getItem(int itemId);
@@ -20,7 +19,7 @@ public interface ItemStorage {
     Collection<Item> getSearchedItems(String searchText);
 
     //update
-    Item updateItem(int itemId, Item item, User owner);
+    Item updateItem(Item item);
 
     //delete
     void deleteItem(int itemId);

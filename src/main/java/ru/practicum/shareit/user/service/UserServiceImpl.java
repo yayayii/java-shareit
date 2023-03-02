@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.user.validator.UserValidator;
@@ -39,13 +40,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(int userId, User user) {
         if (user.getName() == null && user.getEmail() == null) {
-            RuntimeException exception = new NullPointerException("There is nothing to update.");
+            RuntimeException exception = new ValidationException("There is nothing to update.");
             log.warn(exception.getMessage());
             throw exception;
         }
-        userValidator.validateId(userId);
         userValidator.validateUpdatedUser(userId, user);
-        return userStorage.updateUser(userId, user);
+
+        user.setId(userId);
+        return userStorage.updateUser(user);
     }
 
     //delete

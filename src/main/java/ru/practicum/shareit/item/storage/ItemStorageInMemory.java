@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
 
@@ -15,9 +14,8 @@ public class ItemStorageInMemory implements ItemStorage {
 
     //create
     @Override
-    public Item addItem(Item item, User owner) {
+    public Item addItem(Item item) {
         item.setId(++id);
-        item.setOwner(owner);
         items.put(id, item);
         log.info("Item " + id + " was added.");
         return item;
@@ -60,8 +58,8 @@ public class ItemStorageInMemory implements ItemStorage {
 
     //update
     @Override
-    public Item updateItem(int itemId, Item item, User owner) {
-        Item otherItem = items.get(itemId);
+    public Item updateItem(Item item) {
+        Item otherItem = items.get(item.getId());
         if (item.getName() != null) {
             otherItem.setName(item.getName());
         }
@@ -71,9 +69,8 @@ public class ItemStorageInMemory implements ItemStorage {
         if (item.getAvailable() != null) {
             otherItem.setAvailable(item.getAvailable());
         }
-        item.setOwner(owner);
 
-        log.info("Item " + itemId + " was updated.");
+        log.info("Item " + item.getId() + " was updated.");
         return otherItem;
     }
 

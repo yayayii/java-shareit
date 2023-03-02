@@ -40,15 +40,15 @@ public class UserStorageInMemory implements UserStorage {
 
     //update
     @Override
-    public User updateUser(int userId, User user) {
-        User otherUser = users.get(userId);
+    public User updateUser(User user) {
+        User otherUser = users.get(user.getId());
         if (user.getName() != null) {
             otherUser.setName(user.getName());
         }
         if (user.getEmail() != null) {
             otherUser.setEmail(user.getEmail());
         }
-        log.info("User " + userId + " was updated.");
+        log.info("User " + user.getId() + " was updated.");
         return otherUser;
     }
 

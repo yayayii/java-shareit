@@ -36,7 +36,7 @@ public class UserValidator {
     }
 
     public void validateId(int userId) {
-        if (!userStorage.getAllUsers().containsKey(userId)) {
+        if (userStorage.getUser(userId) == null) {
             RuntimeException exception = new NoSuchElementException("User with id = " + userId + " doesn't exist.");
             log.warn(exception.getMessage());
             throw exception;
