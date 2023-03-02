@@ -4,11 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
@@ -19,26 +22,29 @@ public class UserServiceImpl implements UserService {
 
     //create
     @Override
-    public User addUser(User user) {
+    public UserDto addUser(UserDto userDto) {
+        User user = UserMapper.toUser(userDto);
         userValidator.validateNewUser(user);
-        return userStorage.addUser(user);
+        return UserMapper.toUserDto(userStorage.addUser(user));
     }
 
     //read
     @Override
-    public User getUser(int userId) {
+    public UserDto getUser(int userId) {
         userValidator.validateId(userId);
-        return userStorage.getUser(userId);
+        return UserMapper.toUserDto(userStorage.getUser(userId));
     }
 
     @Override
-    public Collection<User> getAllUsers() {
-        return userStorage.getAllUsers().values();
+    public Collection<UserDto> getAllUsers() {
+        return userStorage.getAllUsers().values().
+                stream().map(UserMapper::toUserDto).collect(Collectors.toSet());
     }
 
     //update
     @Override
-    public User updateUser(int userId, User user) {
+    public UserDto updateUser(int userId, UserDto userDto) {
+        User user = UserMapper.toUser(userDto);
         if (user.getName() == null && user.getEmail() == null) {
             RuntimeException exception = new ValidationException("There is nothing to update.");
             log.warn(exception.getMessage());
@@ -47,7 +53,7 @@ public class UserServiceImpl implements UserService {
         userValidator.validateUpdatedUser(userId, user);
 
         user.setId(userId);
-        return userStorage.updateUser(user);
+        return UserMapper.toUserDto(userStorage.updateUser(user));
     }
 
     //delete
