@@ -8,6 +8,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
@@ -16,20 +17,18 @@ public class UserValidator {
     private final UserStorage userStorage;
 
     public void validateNewUser(User user) {
-        for (User otherUser: userStorage.getAllUsers().values()) {
-            validateName(user, otherUser);
-            validateEmail(user, otherUser);
-        }
+        validateName(user);
+        validateEmail(user);
     }
 
     public void validateUpdatedUser(int userId, User user) {
-        for (User otherUser: userStorage.getAllUsers().values()) {
-            if (otherUser.getId() != userId) {
+        for (Integer otherUserId: userStorage.getAllUsers().keySet()) {
+            if (otherUserId != userId) {
                 if (user.getName() != null) {
-                    validateName(user, otherUser);
+                    validateName(user);
                 }
                 if (user.getEmail() != null) {
-                    validateEmail(user, otherUser);
+                    validateEmail(user);
                 }
             }
         }
@@ -43,16 +42,20 @@ public class UserValidator {
         }
     }
 
-    private void validateName(User user, User otherUser) {
-        if (user.getName().equals(otherUser.getName())) {
+    private void validateName(User user) {
+        if (userStorage.getAllUsers().values().
+                stream().map(User::getName).collect(Collectors.toSet()).
+                contains(user.getName())) {
             RuntimeException exception = new ValidationException("User with name \"" + user.getName() + "\" already exists.");
             log.warn(exception.getMessage());
             throw exception;
         }
     }
 
-    private void validateEmail(User user, User otherUser) {
-        if (user.getEmail().equals(otherUser.getEmail())) {
+    private void validateEmail(User user) {
+        if (userStorage.getAllUsers().values().
+                stream().map(User::getEmail).collect(Collectors.toSet()).
+                contains(user.getEmail())) {
             RuntimeException exception = new ValidationException("User with email \"" + user.getEmail() + "\" already exists.");
             log.warn(exception.getMessage());
             throw exception;
