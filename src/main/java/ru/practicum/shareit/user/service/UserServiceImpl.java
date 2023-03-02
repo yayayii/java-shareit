@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.Collection;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<UserDto> getAllUsers() {
         return userStorage.getAllUsers().values().
-                stream().map(UserMapper::toUserDto).collect(Collectors.toSet());
+                stream().map(UserMapper::toUserDto).collect(Collectors.toCollection(TreeSet::new));
     }
 
     //update

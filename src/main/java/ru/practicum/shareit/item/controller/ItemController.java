@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -16,34 +16,34 @@ public class ItemController {
 
     //create
     @PostMapping
-    Item addItem(@Valid @RequestBody Item item,
-                 @RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return itemService.addItem(item, ownerId);
+    ItemDto addItem(@Valid @RequestBody ItemDto itemDto,
+                    @RequestHeader("X-Sharer-User-Id") int ownerId) {
+        return itemService.addItem(itemDto, ownerId);
     }
 
     //read
     @GetMapping("/{itemId}")
-    Item getItem(@PathVariable int itemId) {
+    ItemDto getItem(@PathVariable int itemId) {
         return itemService.getItem(itemId);
     }
 
     @GetMapping
-    Collection<Item> getAllItems(
+    Collection<ItemDto> getAllItems(
             @RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0") int ownerId) {
         return itemService.getAllItems(ownerId);
     }
 
     @GetMapping("/search")
-    Collection<Item> getSearchedItems(@RequestParam("text") String searchText) {
+    Collection<ItemDto> getSearchedItems(@RequestParam("text") String searchText) {
         return itemService.getSearchedItems(searchText);
     }
 
     //update
     @PatchMapping("/{itemId}")
-    Item updateItem(@PathVariable int itemId,
-                    @RequestBody Item item,
+    ItemDto updateItem(@PathVariable int itemId,
+                    @RequestBody ItemDto itemDto,
                     @RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return itemService.updateItem(itemId, item, ownerId);
+        return itemService.updateItem(itemId, itemDto, ownerId);
     }
 
     //delete

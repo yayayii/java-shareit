@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.validation.ItemValidator;
@@ -12,6 +14,8 @@ import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
@@ -24,42 +28,51 @@ public class ItemServiceImpl implements ItemService {
 
     //create
     @Override
-    public Item addItem(Item item, int ownerId) {
+    public ItemDto addItem(ItemDto itemDto, int ownerId) {
+        Item item = ItemMapper.toItem(itemDto);
+
         userValidator.validateId(ownerId);
+
         item.setOwner(userStorage.getUser(ownerId));
         Item addedItem = itemStorage.addItem(item);
         userStorage.getUser(ownerId).getItemIds().add(addedItem.getId());
-        return addedItem;
+        return ItemMapper.toItemDto(addedItem);
     }
 
     //read
     @Override
-    public Item getItem(int itemId) {
+    public ItemDto getItem(int itemId) {
         itemValidator.validateId(itemId);
-        return itemStorage.getItem(itemId);
+
+        return ItemMapper.toItemDto(itemStorage.getItem(itemId));
     }
 
     @Override
-    public Collection<Item> getAllItems(int ownerId) {
+    public Collection<ItemDto> getAllItems(int ownerId) {
         if (ownerId == 0) {
-            return itemStorage.getAllItems().values();
+            return itemStorage.getAllItems().values().
+                    stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
         } else {
             userValidator.validateId(ownerId);
-            return itemStorage.getAllItems(ownerId, userStorage.getUser(ownerId).getItemIds());
+            return itemStorage.getAllItems(ownerId, userStorage.getUser(ownerId).getItemIds()).
+                    stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
         }
     }
 
     @Override
-    public Collection<Item> getSearchedItems(String searchText) {
+    public Collection<ItemDto> getSearchedItems(String searchText) {
         if (searchText.isEmpty() || searchText.isBlank()) {
             return Collections.emptyList();
         }
-        return itemStorage.getSearchedItems(searchText);
+        return itemStorage.getSearchedItems(searchText).
+                stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
     }
 
     //update
     @Override
-    public Item updateItem(int itemId, Item item, int ownerId) {
+    public ItemDto updateItem(int itemId, ItemDto itemDto, int ownerId) {
+        Item item = ItemMapper.toItem(itemDto);
+
         if (item.getName() == null && item.getDescription() == null && item.getAvailable() == null) {
             RuntimeException exception = new ValidationException("There is nothing to update.");
             log.warn(exception.getMessage());
@@ -69,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
 
         item.setId(itemId);
         item.setOwner(userStorage.getUser(ownerId));
-        return itemStorage.updateItem(item);
+        return ItemMapper.toItemDto(itemStorage.updateItem(item));
     }
 
     //delete
