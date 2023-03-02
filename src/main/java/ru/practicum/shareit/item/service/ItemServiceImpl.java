@@ -27,7 +27,9 @@ public class ItemServiceImpl implements ItemService {
     public Item addItem(Item item, int ownerId) {
         userValidator.validateId(ownerId);
         item.setOwner(userStorage.getUser(ownerId));
-        return itemStorage.addItem(item);
+        Item addedItem = itemStorage.addItem(item);
+        userStorage.getUser(ownerId).getItemIds().add(addedItem.getId());
+        return addedItem;
     }
 
     //read
@@ -43,7 +45,7 @@ public class ItemServiceImpl implements ItemService {
             return itemStorage.getAllItems().values();
         } else {
             userValidator.validateId(ownerId);
-            return itemStorage.getAllItems(ownerId);
+            return itemStorage.getAllItems(ownerId, userStorage.getUser(ownerId).getItemIds());
         }
     }
 
@@ -74,6 +76,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void deleteItem(int itemId) {
         itemValidator.validateId(itemId);
+        itemStorage.getItem(itemId).getOwner().getItemIds().remove(itemId);
         itemStorage.deleteItem(itemId);
     }
 

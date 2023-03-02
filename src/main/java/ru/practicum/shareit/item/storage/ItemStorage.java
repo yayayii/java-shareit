@@ -4,6 +4,7 @@ import ru.practicum.shareit.item.model.Item;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public interface ItemStorage {
     //create
@@ -14,7 +15,7 @@ public interface ItemStorage {
 
     Map<Integer, Item> getAllItems();
 
-    Collection<Item> getAllItems(int ownerId);
+    Collection<Item> getAllItems(int ownerId, Set<Integer> itemIds);
 
     Collection<Item> getSearchedItems(String searchText);
 

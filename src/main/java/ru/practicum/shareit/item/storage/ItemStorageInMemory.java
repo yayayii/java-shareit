@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -33,14 +34,8 @@ public class ItemStorageInMemory implements ItemStorage {
     }
 
     @Override
-    public Collection<Item> getAllItems(int ownerId) {
-        List<Item> itemList = new ArrayList<>();
-        for (Item item: items.values()) {
-            if (item.getOwner().getId() == ownerId) {
-                itemList.add(item);
-            }
-        }
-        return itemList;
+    public Collection<Item> getAllItems(int ownerId, Set<Integer> itemIds) {
+        return itemIds.stream().map(this::getItem).collect(Collectors.toList());
     }
 
     @Override
@@ -48,8 +43,8 @@ public class ItemStorageInMemory implements ItemStorage {
         List<Item> itemList = new ArrayList<>();
         for (Item item: items.values()) {
             if (item.getAvailable() &&
-                    (item.getName().toLowerCase().contains(searchText.toLowerCase()) ||
-                    item.getDescription().toLowerCase().contains(searchText.toLowerCase()))) {
+            (item.getName().toLowerCase().contains(searchText.toLowerCase()) ||
+            item.getDescription().toLowerCase().contains(searchText.toLowerCase()))) {
                 itemList.add(item);
             }
         }
