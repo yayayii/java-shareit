@@ -14,6 +14,7 @@ import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,11 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto addItem(ItemDto itemDto, int ownerId) {
         Item item = ItemMapper.toItem(itemDto);
 
-        userValidator.validateId(ownerId);
+        if (userStorage.getUser(ownerId) == null) {
+            RuntimeException exception = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
+            log.warn(exception.getMessage());
+            throw exception;
+        }
 
         item.setOwner(userStorage.getUser(ownerId));
         Item addedItem = itemStorage.addItem(item);
@@ -42,7 +47,11 @@ public class ItemServiceImpl implements ItemService {
     //read
     @Override
     public ItemDto getItem(int itemId) {
-        itemValidator.validateId(itemId);
+        if (itemStorage.getItem(itemId) == null) {
+            RuntimeException exception = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
+            log.warn(exception.getMessage());
+            throw exception;
+        }
 
         return ItemMapper.toItemDto(itemStorage.getItem(itemId));
     }
@@ -53,7 +62,11 @@ public class ItemServiceImpl implements ItemService {
             return itemStorage.getAllItems().values()
                     .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
         } else {
-            userValidator.validateId(ownerId);
+            if (userStorage.getUser(ownerId) == null) {
+                RuntimeException exception = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
+                log.warn(exception.getMessage());
+                throw exception;
+            }
             return itemStorage.getAllItems(ownerId, userStorage.getUser(ownerId).getItemIds())
                     .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
         }
@@ -88,7 +101,11 @@ public class ItemServiceImpl implements ItemService {
     //delete
     @Override
     public void deleteItem(int itemId) {
-        itemValidator.validateId(itemId);
+        if (itemStorage.getItem(itemId) == null) {
+            RuntimeException exception = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
+            log.warn(exception.getMessage());
+            throw exception;
+        }
         itemStorage.getItem(itemId).getOwner().getItemIds().remove(itemId);
         itemStorage.deleteItem(itemId);
     }

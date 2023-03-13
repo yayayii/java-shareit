@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @Slf4j
@@ -34,14 +33,6 @@ public class UserValidator {
                     validateName(otherUser.getEmail(), user.getEmail());
                 }
             }
-        }
-    }
-
-    public void validateId(int userId) {
-        if (userStorage.getUser(userId) == null) {
-            RuntimeException exception = new NoSuchElementException("User with id = " + userId + " doesn't exist.");
-            log.warn(exception.getMessage());
-            throw exception;
         }
     }
 

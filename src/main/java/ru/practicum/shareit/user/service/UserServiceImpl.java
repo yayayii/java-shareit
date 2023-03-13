@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,11 @@ public class UserServiceImpl implements UserService {
     //read
     @Override
     public UserDto getUser(int userId) {
-        userValidator.validateId(userId);
+        if (userStorage.getUser(userId) == null) {
+            RuntimeException exception = new NoSuchElementException("User with id = " + userId + " doesn't exist.");
+            log.warn(exception.getMessage());
+            throw exception;
+        }
         return UserMapper.toUserDto(userStorage.getUser(userId));
     }
 
@@ -60,7 +65,11 @@ public class UserServiceImpl implements UserService {
     //delete
     @Override
     public void deleteUser(int userId) {
-        userValidator.validateId(userId);
+        if (userStorage.getUser(userId) == null) {
+            RuntimeException exception = new NoSuchElementException("User with id = " + userId + " doesn't exist.");
+            log.warn(exception.getMessage());
+            throw exception;
+        }
         userStorage.deleteUser(userId);
     }
 
