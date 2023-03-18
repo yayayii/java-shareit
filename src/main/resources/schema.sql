@@ -15,7 +15,8 @@ create table if not exists item (
     name varchar not null,
     description varchar not null,
     is_available bool default true,
-    owner_id int not null references user_account on delete cascade
+    owner_id int not null references user_account on delete cascade,
+    request_id int unique references request
 );
 
 create table if not exists booking_status (
