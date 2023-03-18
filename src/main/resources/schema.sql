@@ -7,7 +7,7 @@ create table if not exists user_account (
 create table if not exists request (
     id serial primary key,
     description varchar,
-    requestor_Id int not null references user_account on delete cascade
+    requestor_id int not null references user_account on delete cascade
 );
 
 create table if not exists item (
