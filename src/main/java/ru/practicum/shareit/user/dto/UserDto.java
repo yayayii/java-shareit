@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class UserDto implements Comparable<UserDto> {
+public class UserDto {
     private int id;
     @NotNull @NotBlank @NotEmpty
     private String name;
@@ -19,10 +19,5 @@ public class UserDto implements Comparable<UserDto> {
         this.id = id;
         this.name = name;
         this.email = email;
-    }
-
-    @Override
-    public int compareTo(UserDto o) {
-        return Integer.compare(id, o.id);
     }
 }
