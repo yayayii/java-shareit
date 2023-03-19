@@ -3,72 +3,66 @@ package ru.practicum.shareit.item.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.item.validation.ItemValidator;
-import ru.practicum.shareit.user.storage.UserStorage;
-import ru.practicum.shareit.user.validator.UserValidator;
+import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserRepository;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.NoSuchElementException;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
 @Service
 public class ItemServiceImpl implements ItemService {
-    private final ItemValidator itemValidator;
-    private final UserValidator userValidator;
-    private final ItemStorage itemStorage;
-    private final UserStorage userStorage;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     //create
     @Override
     public ItemDto addItem(ItemDto itemDto, int ownerId) {
-        Item item = ItemMapper.toItem(itemDto);
-
-        if (userStorage.getUser(ownerId) == null) {
-            RuntimeException exception = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
-            log.warn(exception.getMessage());
-            throw exception;
+        Optional<User> owner = userRepository.findById(ownerId);
+        if (owner.isEmpty()) {
+            RuntimeException e = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
+            log.warn(e.getMessage());
+            throw e;
         }
 
-        item.setOwner(userStorage.getUser(ownerId));
-        Item addedItem = itemStorage.addItem(item);
-        userStorage.getUser(ownerId).getItemIds().add(addedItem.getId());
-        return ItemMapper.toItemDto(addedItem);
+        Item item = ItemMapper.toItem(itemDto);
+        item.setOwner(owner.get());
+
+        return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
     //read
     @Override
     public ItemDto getItem(int itemId) {
-        if (itemStorage.getItem(itemId) == null) {
-            RuntimeException exception = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
-            log.warn(exception.getMessage());
-            throw exception;
+        Optional<Item> item = itemRepository.findById(itemId);
+        if (item.isEmpty()) {
+            RuntimeException e = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
+            log.warn(e.getMessage());
+            throw e;
         }
 
-        return ItemMapper.toItemDto(itemStorage.getItem(itemId));
+        return ItemMapper.toItemDto(item.get());
     }
 
     @Override
     public Collection<ItemDto> getAllItems(int ownerId) {
         if (ownerId == 0) {
-            return itemStorage.getAllItems().values()
-                    .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
+            return itemRepository.findAll()
+                    .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
         } else {
-            if (userStorage.getUser(ownerId) == null) {
-                RuntimeException exception = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
-                log.warn(exception.getMessage());
-                throw exception;
+            if (!userRepository.existsById(ownerId)) {
+                RuntimeException e = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
+                log.warn(e.getMessage());
+                throw e;
             }
-            return itemStorage.getAllItems(ownerId, userStorage.getUser(ownerId).getItemIds())
-                    .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
+
+            return itemRepository.findByOwner_Id(ownerId)
+                    .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
         }
     }
 
@@ -77,41 +71,58 @@ public class ItemServiceImpl implements ItemService {
         if (searchText.isEmpty() || searchText.isBlank()) {
             return Collections.emptyList();
         }
-        return itemStorage.getSearchedItems(searchText)
-                .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
+
+        return itemRepository.getSearchedItems(searchText)
+                .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     //update
     @Override
     public ItemDto updateItem(int itemId, ItemDto itemDto, int ownerId) {
-        Item item = ItemMapper.toItem(itemDto);
-
-        if (item.getName() == null && item.getDescription() == null && item.getAvailable() == null) {
-            RuntimeException exception = new ValidationException("There is nothing to update.");
-            log.warn(exception.getMessage());
-            throw exception;
+        if (!itemRepository.existsById(itemId)) {
+            RuntimeException e = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
+            log.warn(e.getMessage());
+            throw e;
         }
-        itemValidator.validateUpdatedItem(itemId, ownerId);
+        if (ownerId != 0 && !userRepository.existsById(ownerId)) {
+            RuntimeException e = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
+            log.warn(e.getMessage());
+            throw e;
+        }
 
+        Item item = itemRepository.getReferenceById(itemId);
+        Item updatedItem = ItemMapper.toItem(itemDto);
+        if (updatedItem.getName() != null) {
+            item.setName(updatedItem.getName());
+        }
+        if (updatedItem.getDescription() != null) {
+            item.setDescription(updatedItem.getDescription());
+        }
+        if (updatedItem.getAvailable() != null) {
+            item.setAvailable(updatedItem.getAvailable());
+        }
+        if (item.getOwner() == null && ownerId != 0) {
+            item.setOwner(userRepository.getReferenceById(ownerId));
+        }
         item.setId(itemId);
-        item.setOwner(userStorage.getUser(ownerId));
-        return ItemMapper.toItemDto(itemStorage.updateItem(item));
+
+        return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
     //delete
     @Override
     public void deleteItem(int itemId) {
-        if (itemStorage.getItem(itemId) == null) {
-            RuntimeException exception = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
-            log.warn(exception.getMessage());
-            throw exception;
+        if (!itemRepository.existsById(itemId)) {
+            RuntimeException e = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
+            log.warn(e.getMessage());
+            throw e;
         }
-        itemStorage.getItem(itemId).getOwner().getItemIds().remove(itemId);
-        itemStorage.deleteItem(itemId);
+
+        itemRepository.deleteById(itemId);
     }
 
     @Override
     public void deleteAllItems() {
-        itemStorage.deleteAllItems();
+        itemRepository.deleteAll();
     }
 }
