@@ -16,8 +16,10 @@ public class ItemController {
 
     //create
     @PostMapping
-    ItemDto addItem(@Valid @RequestBody ItemDto itemDto,
-                    @RequestHeader("X-Sharer-User-Id") int ownerId) {
+    ItemDto addItem(
+            @Valid @RequestBody ItemDto itemDto,
+            @RequestHeader("X-Sharer-User-Id") int ownerId
+    ) {
         return itemService.addItem(itemDto, ownerId);
     }
 
@@ -29,7 +31,8 @@ public class ItemController {
 
     @GetMapping
     Collection<ItemDto> getAllItems(
-            @RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0") int ownerId) {
+            @RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0") int ownerId
+    ) {
         return itemService.getAllItems(ownerId);
     }
 
@@ -40,9 +43,11 @@ public class ItemController {
 
     //update
     @PatchMapping("/{itemId}")
-    ItemDto updateItem(@PathVariable int itemId,
-                    @RequestBody ItemDto itemDto,
-                    @RequestHeader("X-Sharer-User-Id") int ownerId) {
+    ItemDto updateItem(
+            @PathVariable int itemId,
+            @RequestBody ItemDto itemDto,
+            @RequestHeader("X-Sharer-User-Id") int ownerId
+    ) {
         return itemService.updateItem(itemId, itemDto, ownerId);
     }
 

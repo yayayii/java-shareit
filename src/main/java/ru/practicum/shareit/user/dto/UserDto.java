@@ -9,15 +9,9 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class UserDto {
-    private int id;
+    private final int id;
     @NotNull @NotBlank @NotEmpty
-    private String name;
+    private final String name;
     @NotNull @NotBlank @NotEmpty @Email
-    private String email;
-
-    public UserDto(int id, String name, String email) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-    }
+    private final String email;
 }

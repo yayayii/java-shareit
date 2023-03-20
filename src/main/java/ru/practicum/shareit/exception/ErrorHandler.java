@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 @RestControllerAdvice
 public class ErrorHandler {
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErrorResponse handleValidationException(final ValidationException e) {
         return new ErrorResponse(e.getMessage());
     }
@@ -19,6 +19,12 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorResponse handleIllegalArgumentException(final IllegalArgumentException e) {
         return new ErrorResponse(e.getMessage());
     }
 

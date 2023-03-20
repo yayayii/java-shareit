@@ -32,6 +32,9 @@ public class ItemServiceImpl implements ItemService {
 
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(owner.get());
+        if (item.getAvailable() == null) {
+            item.setAvailable(true);
+        }
 
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
