@@ -49,13 +49,14 @@ public class UserServiceImpl implements UserService {
     //update
     @Override
     public UserDto updateUser(int userId, UserDto userDto) {
-        if (!userRepository.existsById(userId)) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
             RuntimeException e = new NoSuchElementException("User with id = " + userId + " doesn't exist.");
             log.warn(e.getMessage());
             throw e;
         }
 
-        User user = userRepository.getReferenceById(userId);
+        User user = userOptional.get();
         User updatedUser = UserMapper.toUser(userDto);
         if (updatedUser.getName() != null) {
             user.setName(updatedUser.getName());

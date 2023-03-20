@@ -82,18 +82,14 @@ public class ItemServiceImpl implements ItemService {
     //update
     @Override
     public ItemDto updateItem(int itemId, ItemDto itemDto, int ownerId) {
-        if (!itemRepository.existsById(itemId)) {
+        Optional<Item> itemOptional = itemRepository.findById(itemId);
+        if (itemOptional.isEmpty()) {
             RuntimeException e = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
             log.warn(e.getMessage());
             throw e;
         }
-        if (ownerId != 0 && !userRepository.existsById(ownerId)) {
-            RuntimeException e = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
-            log.warn(e.getMessage());
-            throw e;
-        }
 
-        Item item = itemRepository.getReferenceById(itemId);
+        Item item = itemOptional.get();
         Item updatedItem = ItemMapper.toItem(itemDto);
         if (updatedItem.getName() != null) {
             item.setName(updatedItem.getName());
@@ -104,8 +100,14 @@ public class ItemServiceImpl implements ItemService {
         if (updatedItem.getAvailable() != null) {
             item.setAvailable(updatedItem.getAvailable());
         }
-        if (item.getOwner() == null && ownerId != 0) {
-            item.setOwner(userRepository.getReferenceById(ownerId));
+        if (item.getOwner() == null) {
+            Optional<User> ownerOptional = userRepository.findById(ownerId);
+            if (ownerOptional.isEmpty()) {
+                RuntimeException e = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
+                log.warn(e.getMessage());
+                throw e;
+            }
+            item.setOwner(ownerOptional.get());
         }
         item.setId(itemId);
 
