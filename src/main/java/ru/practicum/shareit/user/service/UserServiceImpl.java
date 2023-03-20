@@ -10,7 +10,6 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -30,14 +29,10 @@ public class UserServiceImpl implements UserService {
     //read
     @Override
     public UserDto getUser(int userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            RuntimeException e = new NoSuchElementException("User with id = " + userId + " doesn't exist.");
-            log.warn(e.getMessage());
-            throw e;
-        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id = " + userId + " doesn't exist."));
 
-        return UserMapper.toUserDto(user.get());
+        return UserMapper.toUserDto(user);
     }
 
     @Override
@@ -49,14 +44,8 @@ public class UserServiceImpl implements UserService {
     //update
     @Override
     public UserDto updateUser(int userId, UserDto userDto) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            RuntimeException e = new NoSuchElementException("User with id = " + userId + " doesn't exist.");
-            log.warn(e.getMessage());
-            throw e;
-        }
-
-        User user = userOptional.get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id = " + userId + " doesn't exist."));
         User updatedUser = UserMapper.toUser(userDto);
         if (updatedUser.getName() != null) {
             user.setName(updatedUser.getName());
@@ -73,9 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(int userId) {
         if (!userRepository.existsById(userId)) {
-            RuntimeException e = new NoSuchElementException("User with id = " + userId + " doesn't exist.");
-            log.warn(e.getMessage());
-            throw e;
+            throw new NoSuchElementException("User with id = " + userId + " doesn't exist.");
         }
 
         userRepository.deleteById(userId);

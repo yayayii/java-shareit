@@ -23,15 +23,10 @@ public class ItemServiceImpl implements ItemService {
     //create
     @Override
     public ItemDto addItem(ItemDto itemDto, int ownerId) {
-        Optional<User> owner = userRepository.findById(ownerId);
-        if (owner.isEmpty()) {
-            RuntimeException e = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
-            log.warn(e.getMessage());
-            throw e;
-        }
-
+        User owner = userRepository.findById(ownerId)
+                .orElseThrow(() -> new NoSuchElementException("User with id = " + ownerId + " doesn't exist."));
         Item item = ItemMapper.toItem(itemDto);
-        item.setOwner(owner.get());
+        item.setOwner(owner);
         if (item.getAvailable() == null) {
             item.setAvailable(true);
         }
@@ -42,14 +37,10 @@ public class ItemServiceImpl implements ItemService {
     //read
     @Override
     public ItemDto getItem(int itemId) {
-        Optional<Item> item = itemRepository.findById(itemId);
-        if (item.isEmpty()) {
-            RuntimeException e = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
-            log.warn(e.getMessage());
-            throw e;
-        }
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException("Item with id = " + itemId + " doesn't exist."));
 
-        return ItemMapper.toItemDto(item.get());
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
@@ -59,9 +50,7 @@ public class ItemServiceImpl implements ItemService {
                     .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
         } else {
             if (!userRepository.existsById(ownerId)) {
-                RuntimeException e = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
-                log.warn(e.getMessage());
-                throw e;
+                throw new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
             }
 
             return itemRepository.findByOwner_Id(ownerId)
@@ -82,14 +71,8 @@ public class ItemServiceImpl implements ItemService {
     //update
     @Override
     public ItemDto updateItem(int itemId, ItemDto itemDto, int ownerId) {
-        Optional<Item> itemOptional = itemRepository.findById(itemId);
-        if (itemOptional.isEmpty()) {
-            RuntimeException e = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
-            log.warn(e.getMessage());
-            throw e;
-        }
-
-        Item item = itemOptional.get();
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException("Item with id = " + itemId + " doesn't exist."));
         Item updatedItem = ItemMapper.toItem(itemDto);
         if (updatedItem.getName() != null) {
             item.setName(updatedItem.getName());
@@ -118,9 +101,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void deleteItem(int itemId) {
         if (!itemRepository.existsById(itemId)) {
-            RuntimeException e = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
-            log.warn(e.getMessage());
-            throw e;
+            throw new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
         }
 
         itemRepository.deleteById(itemId);
