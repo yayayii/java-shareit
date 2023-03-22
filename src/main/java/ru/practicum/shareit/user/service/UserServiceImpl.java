@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUser(int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User with id = " + userId + " doesn't exist."));
+                .orElseThrow(() -> new NoSuchElementException("User id = " + userId + " doesn't exist."));
 
         return UserMapper.toUserDto(user);
     }
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(int userId, UserDto userDto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User with id = " + userId + " doesn't exist."));
+                .orElseThrow(() -> new NoSuchElementException("User id = " + userId + " doesn't exist."));
         User updatedUser = UserMapper.toUser(userDto);
         if (updatedUser.getName() != null) {
             user.setName(updatedUser.getName());
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(int userId) {
         if (!userRepository.existsById(userId)) {
-            throw new NoSuchElementException("User with id = " + userId + " doesn't exist.");
+            throw new NoSuchElementException("User id = " + userId + " doesn't exist.");
         }
 
         userRepository.deleteById(userId);
