@@ -24,6 +24,6 @@ create table if not exists booking (
     start_date timestamp not null,
     end_date timestamp not null,
     status varchar not null,
-    item_id int unique not null references item on delete cascade,
-    booker_id int unique not null references user_account on delete cascade
+    item_id int not null references item on delete cascade,
+    booker_id int not null references user_account on delete cascade
 );

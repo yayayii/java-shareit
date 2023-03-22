@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.ForbiddenActionException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -84,13 +85,13 @@ public class ItemServiceImpl implements ItemService {
             item.setAvailable(updatedItem.getAvailable());
         }
         if (item.getOwner() == null) {
-            Optional<User> ownerOptional = userRepository.findById(ownerId);
-            if (ownerOptional.isEmpty()) {
-                RuntimeException e = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
-                log.warn(e.getMessage());
-                throw e;
+            User owner = userRepository.findById(ownerId)
+                    .orElseThrow(() -> new NoSuchElementException("User with id = " + ownerId + " doesn't exist."));
+            item.setOwner(owner);
+        } else {
+            if (item.getOwner().getId() != ownerId) {
+                throw new ForbiddenActionException("Changing owner is forbidden.");
             }
-            item.setOwner(ownerOptional.get());
         }
         item.setId(itemId);
 

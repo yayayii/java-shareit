@@ -1,8 +1,10 @@
 package ru.practicum.shareit.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -28,7 +30,14 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ErrorResponse handleIllegalArgumentException(final IllegalArgumentException e) {
+    ErrorResponse handleMissingRequestHeaderException(final MissingRequestHeaderException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    ErrorResponse handleForbiddenActionException(final ForbiddenActionException e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
@@ -41,8 +50,8 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    ErrorResponse handleForbiddenActionException(final ForbiddenActionException e) {
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ErrorResponse handleDataIntegrityViolationException(final DataIntegrityViolationException e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
