@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingShort;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.ForbiddenActionException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -127,17 +126,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void setBookingsForItem(ItemDto itemDto) {
-        Booking lastBooking = bookingRepository.findLastBookingByItemId(itemDto.getId());
-        Booking nextBooking = bookingRepository.findNextBookingByItemId(itemDto.getId());
-        if (lastBooking == null) {
-            itemDto.setLastBooking(null);
-        } else {
-            itemDto.setLastBooking(new BookingShort(lastBooking.getId(), lastBooking.getBooker().getId()));
-        }
-        if (nextBooking == null) {
-            itemDto.setNextBooking(null);
-        } else {
-            itemDto.setNextBooking(new BookingShort(nextBooking.getId(), nextBooking.getBooker().getId()));
-        }
+        BookingShort lastBooking = bookingRepository.findLastBookingByItemId(itemDto.getId());
+        BookingShort nextBooking = bookingRepository.findNextBookingByItemId(itemDto.getId());
+        itemDto.setLastBooking(lastBooking);
+        itemDto.setNextBooking(nextBooking);
     }
 }

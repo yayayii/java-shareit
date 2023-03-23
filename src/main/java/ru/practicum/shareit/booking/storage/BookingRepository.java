@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.storage;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
@@ -63,19 +64,19 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findBookingsByItem_IdAndStatusIn(int itemId, Set<BookingStatus> set);
 
 
-    @Query(value = "select * from booking b " +
+    @Query(value = "select b.id, b.booker_id from booking b " +
             "where item_id = ?1 " +
             "and end_date < current_timestamp " +
             "order by end_date desc " +
             "limit 1",
     nativeQuery = true)
-    Booking findLastBookingByItemId(int itemId);
+    BookingShort findLastBookingByItemId(int itemId);
 
-    @Query(value = "select * from booking b " +
+    @Query(value = "select b.id, b.booker_id from booking b " +
             "where item_id = ?1 " +
             "and start_date > current_timestamp " +
             "order by start_date " +
             "limit 1",
             nativeQuery = true)
-    Booking findNextBookingByItemId(int itemId);
+    BookingShort findNextBookingByItemId(int itemId);
 }
