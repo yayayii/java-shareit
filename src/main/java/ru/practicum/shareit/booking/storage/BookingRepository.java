@@ -78,4 +78,13 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "limit 1",
             nativeQuery = true)
     Booking findNextBookingByItemId(int itemId);
+
+    @Query(value = "select * from booking b " +
+            "where item_id = ?1 " +
+            "and booker_id = ?2 " +
+            "and end_date < current_timestamp " +
+            "order by end_date desc " +
+            "limit 1",
+            nativeQuery = true)
+    Booking findLastBookingByItemIdAndBookerId(int itemId, int userId);
 }

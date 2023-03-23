@@ -7,13 +7,18 @@ import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.ForbiddenActionException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,6 +29,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     //create
     @Override
@@ -37,6 +43,27 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return ItemMapper.toItemDto(itemRepository.save(item));
+    }
+
+    @Override
+    public CommentDto addComment(CommentDto commentDto, int itemId, int bookerId) {
+        User booker = userRepository.findById(bookerId)
+                .orElseThrow(() -> new NoSuchElementException("User id = " + bookerId + " doesn't exist."));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException("Item id = " + itemId + " doesn't exist."));
+        if (item.getOwner().getId() == bookerId) {
+            throw new NoSuchElementException("Owner of the item can't leave comments on his own items.");
+        }
+        if (bookingRepository.findLastBookingByItemIdAndBookerId(itemId, bookerId) == null) {
+            throw new NoSuchElementException("You must have this item in the past in order to leave a comment.");
+        }
+
+        Comment comment = CommentMapper.toComment(commentDto);
+        comment.setItem(item);
+        comment.setAuthor(booker);
+        comment.setCreated(LocalDateTime.now());
+
+        return CommentMapper.toCommentDto(commentRepository.save(comment));
     }
 
     //read
