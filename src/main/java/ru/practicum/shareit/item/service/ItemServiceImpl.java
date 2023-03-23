@@ -76,8 +76,8 @@ public class ItemServiceImpl implements ItemService {
         if (userId == item.getOwner().getId()) {
             setBookingsForItem(itemDto);
         }
-        itemDto.setComments(commentRepository.findCommentsByItem_Id(itemId).
-                stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()));
+        itemDto.setComments(commentRepository.findCommentsByItem_Id(itemId)
+                .stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()));
 
         return itemDto;
     }
@@ -96,8 +96,8 @@ public class ItemServiceImpl implements ItemService {
                     .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
             for (ItemDto itemDto : items) {
                 setBookingsForItem(itemDto);
-                itemDto.setComments(commentRepository.findCommentsByItem_Id(itemDto.getId()).
-                        stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()));
+                itemDto.setComments(commentRepository.findCommentsByItem_Id(itemDto.getId())
+                        .stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()));
             }
 
             return items;
