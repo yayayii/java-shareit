@@ -65,7 +65,8 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query(value = "select * from booking b " +
             "where item_id = ?1 " +
-            "and end_date < current_timestamp " +
+            "and start_date < current_timestamp " +
+            "and status in ('WAITING', 'APPROVED')" +
             "order by end_date desc " +
             "limit 1",
     nativeQuery = true)
@@ -74,6 +75,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query(value = "select * from booking b " +
             "where item_id = ?1 " +
             "and start_date > current_timestamp " +
+            "and status in ('WAITING', 'APPROVED')" +
             "order by start_date " +
             "limit 1",
             nativeQuery = true)
@@ -83,6 +85,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where item_id = ?1 " +
             "and booker_id = ?2 " +
             "and end_date < current_timestamp " +
+            "and status like 'APPROVED' " +
             "order by end_date desc " +
             "limit 1",
             nativeQuery = true)

@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.ForbiddenActionException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
@@ -55,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
             throw new NoSuchElementException("Owner of the item can't leave comments on his own items.");
         }
         if (bookingRepository.findLastBookingByItemIdAndBookerId(itemId, bookerId) == null) {
-            throw new NoSuchElementException("You must have this item in the past in order to leave a comment.");
+            throw new ValidationException("You must have this item in the past in order to leave a comment.");
         }
 
         Comment comment = CommentMapper.toComment(commentDto);
@@ -75,6 +76,8 @@ public class ItemServiceImpl implements ItemService {
         if (userId == item.getOwner().getId()) {
             setBookingsForItem(itemDto);
         }
+        itemDto.setComments(commentRepository.findCommentsByItem_Id(itemId).
+                stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()));
 
         return itemDto;
     }
@@ -93,6 +96,8 @@ public class ItemServiceImpl implements ItemService {
                     .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
             for (ItemDto itemDto : items) {
                 setBookingsForItem(itemDto);
+                itemDto.setComments(commentRepository.findCommentsByItem_Id(itemDto.getId()).
+                        stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()));
             }
 
             return items;
