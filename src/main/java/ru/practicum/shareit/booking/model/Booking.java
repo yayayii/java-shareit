@@ -22,6 +22,7 @@ public class Booking {
     private LocalDateTime start;
     @Column(name = "end_date")
     private LocalDateTime end;
+    @Enumerated(value = EnumType.STRING)
     private BookingStatus status;
     @OneToOne
     private Item item;
