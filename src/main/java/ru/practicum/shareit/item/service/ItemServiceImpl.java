@@ -46,18 +46,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NoSuchElementException("Item id = " + itemId + " doesn't exist."));
         ItemDto itemDto = ItemMapper.toItemDto(item);
         if (userId == item.getOwner().getId()) {
-            Booking lastBooking = bookingRepository.findLastBookingByItemId(itemId);
-            Booking nextBooking = bookingRepository.findNextBookingByItemId(itemId);
-            if (lastBooking == null) {
-                itemDto.setLastBooking(null);
-            } else {
-                itemDto.setLastBooking(new BookingShort(lastBooking.getId(), lastBooking.getBooker().getId()));
-            }
-            if (nextBooking == null) {
-                itemDto.setNextBooking(null);
-            } else {
-                itemDto.setNextBooking(new BookingShort(nextBooking.getId(), nextBooking.getBooker().getId()));
-            }
+            setBookingsForItem(itemDto);
         }
 
         return itemDto;
@@ -75,20 +64,8 @@ public class ItemServiceImpl implements ItemService {
 
             List<ItemDto> items = itemRepository.findByOwner_IdOrderById(ownerId)
                     .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
-
-            for (ItemDto i : items) {
-                Booking lastBooking = bookingRepository.findLastBookingByItemId(i.getId());
-                Booking nextBooking = bookingRepository.findNextBookingByItemId(i.getId());
-                if (lastBooking == null) {
-                    i.setLastBooking(null);
-                } else {
-                    i.setLastBooking(new BookingShort(lastBooking.getId(), lastBooking.getBooker().getId()));
-                }
-                if (nextBooking == null) {
-                    i.setNextBooking(null);
-                } else {
-                    i.setNextBooking(new BookingShort(nextBooking.getId(), nextBooking.getBooker().getId()));
-                }
+            for (ItemDto itemDto : items) {
+                setBookingsForItem(itemDto);
             }
 
             return items;
@@ -147,5 +124,20 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void deleteAllItems() {
         itemRepository.deleteAll();
+    }
+
+    private void setBookingsForItem(ItemDto itemDto) {
+        Booking lastBooking = bookingRepository.findLastBookingByItemId(itemDto.getId());
+        Booking nextBooking = bookingRepository.findNextBookingByItemId(itemDto.getId());
+        if (lastBooking == null) {
+            itemDto.setLastBooking(null);
+        } else {
+            itemDto.setLastBooking(new BookingShort(lastBooking.getId(), lastBooking.getBooker().getId()));
+        }
+        if (nextBooking == null) {
+            itemDto.setNextBooking(null);
+        } else {
+            itemDto.setNextBooking(new BookingShort(nextBooking.getId(), nextBooking.getBooker().getId()));
+        }
     }
 }
