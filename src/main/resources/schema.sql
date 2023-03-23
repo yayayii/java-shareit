@@ -27,3 +27,11 @@ create table if not exists booking (
     item_id int not null references item on delete cascade,
     booker_id int not null references user_account on delete cascade
 );
+
+create table if not exists comment (
+    id serial primary key,
+    content varchar not null,
+    item_id int not null references item on delete cascade,
+    author_id int not null references user_account on delete cascade,
+    created timestamp not null
+)
