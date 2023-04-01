@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.storage;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.model.Booking;
@@ -9,58 +10,52 @@ import java.util.List;
 import java.util.Set;
 
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
-    List<Booking> findBookingsByBooker_IdOrderByStartDesc(int bookerId);
+    List<Booking> findBookingsByBooker_Id(int bookerId, Sort sort);
 
     @Query("select b  from Booking b " +
             "join b.booker u " +
             "where u.id = ?1 " +
-            "and current_timestamp between b.start and b.end " +
-            "order by b.start desc")
-    List<Booking> findCurrentBookings(int bookerId);
+            "and current_timestamp between b.start and b.end")
+    List<Booking> findCurrentBookings(int bookerId, Sort sort);
 
     @Query("select b  from Booking b " +
             "join b.booker u " +
             "where u.id = ?1 " +
-            "and b.end < current_timestamp " +
-            "order by b.start desc")
-    List<Booking> findPastBookings(int bookerId);
+            "and b.end < current_timestamp")
+    List<Booking> findPastBookings(int bookerId, Sort sort);
 
     @Query("select b  from Booking b " +
             "join b.booker u " +
             "where u.id = ?1 " +
-            "and b.start > current_timestamp " +
-            "order by b.start desc")
-    List<Booking> findFutureBookings(int bookerId);
+            "and b.start > current_timestamp")
+    List<Booking> findFutureBookings(int bookerId, Sort sort);
 
-    List<Booking> findBookingsByBooker_IdAndStatusOrderByStartDesc(int bookerId, BookingStatus status);
+    List<Booking> findBookingsByBooker_IdAndStatus(int bookerId, BookingStatus status, Sort sort);
 
 
-    List<Booking> findBookingsByItem_Owner_IdOrderByStartDesc(int ownerId);
-
-    @Query("select b  from Booking b " +
-            "join b.item i " +
-            "where i.owner.id = ?1 " +
-            "and current_timestamp between b.start and b.end " +
-            "order by b.start desc")
-    List<Booking> findCurrentBookingsByItem_Owner_Id(int ownerId);
+    List<Booking> findBookingsByItem_Owner_Id(int ownerId, Sort sort);
 
     @Query("select b  from Booking b " +
             "join b.item i " +
             "where i.owner.id = ?1 " +
-            "and b.end < current_timestamp " +
-            "order by b.start desc")
-    List<Booking> findPastBookingsByItem_Owner_Id(int ownerId);
+            "and current_timestamp between b.start and b.end")
+    List<Booking> findCurrentBookingsByItem_Owner_Id(int ownerId, Sort sort);
 
     @Query("select b  from Booking b " +
             "join b.item i " +
             "where i.owner.id = ?1 " +
-            "and b.start > current_timestamp " +
-            "order by b.start desc")
-    List<Booking> findFutureBookingsByItem_Owner_Id(int ownerId);
+            "and b.end < current_timestamp")
+    List<Booking> findPastBookingsByItem_Owner_Id(int ownerId, Sort sort);
 
-    List<Booking> findBookingsByItem_Owner_IdAndStatusOrderByStartDesc(int ownerId, BookingStatus status);
+    @Query("select b  from Booking b " +
+            "join b.item i " +
+            "where i.owner.id = ?1 " +
+            "and b.start > current_timestamp")
+    List<Booking> findFutureBookingsByItem_Owner_Id(int ownerId, Sort sort);
 
-    List<Booking> findBookingsByItem_IdAndStatusIn(int itemId, Set<BookingStatus> set);
+    List<Booking> findBookingsByItem_Owner_IdAndStatus(int ownerId, BookingStatus status, Sort sort);
+
+    List<Booking> findBookingsByItem_IdAndStatusIn(int itemId, Set<BookingStatus> set, Sort sort);
 
 
     @Query(value = "select * from booking b " +

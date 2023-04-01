@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -14,11 +15,13 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     //create
+    @Transactional
     @Override
     public UserDto addUser(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
@@ -42,23 +45,25 @@ public class UserServiceImpl implements UserService {
     }
 
     //update
+    @Transactional
     @Override
     public UserDto updateUser(int userId, UserDto userDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User id = " + userId + " doesn't exist."));
         User updatedUser = UserMapper.toUser(userDto);
-        if (updatedUser.getName() != null) {
+        if (updatedUser.getName() != null && !updatedUser.getName().isBlank()) {
             user.setName(updatedUser.getName());
         }
-        if (updatedUser.getEmail() != null) {
+        if (updatedUser.getEmail() != null && !updatedUser.getEmail().isBlank()) {
             user.setEmail(updatedUser.getEmail());
         }
         user.setId(userId);
 
-        return UserMapper.toUserDto(userRepository.save(user));
+        return UserMapper.toUserDto(user);
     }
 
     //delete
+    @Transactional
     @Override
     public void deleteUser(int userId) {
         if (!userRepository.existsById(userId)) {
@@ -68,6 +73,7 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
+    @Transactional
     @Override
     public void deleteAllUsers() {
         userRepository.deleteAll();

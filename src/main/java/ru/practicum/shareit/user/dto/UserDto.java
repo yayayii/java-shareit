@@ -1,17 +1,17 @@
 package ru.practicum.shareit.user.dto;
 
 import lombok.Data;
+import ru.practicum.shareit.util.Create;
+import ru.practicum.shareit.util.Update;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Data
 public class UserDto {
     private final int id;
-    @NotNull @NotBlank @NotEmpty
+    @NotBlank(groups = Create.class)
     private final String name;
-    @NotNull @NotBlank @NotEmpty @Email
+    @NotBlank(groups = Create.class) @Email(groups = {Create.class, Update.class})
     private final String email;
 }
