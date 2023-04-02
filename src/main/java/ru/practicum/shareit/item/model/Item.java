@@ -25,8 +25,7 @@ public class Item {
     @ManyToOne
     private ItemRequest request;
 
-    public Item(int id, String name, String description, Boolean available) {
-        this.id = id;
+    public Item(String name, String description, Boolean available) {
         this.name = name;
         this.description = description;
         this.available = available;

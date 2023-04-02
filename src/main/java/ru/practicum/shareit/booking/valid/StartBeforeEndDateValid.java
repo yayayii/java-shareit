@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Constraint(validatedBy = CheckDateValidator.class)
 public @interface StartBeforeEndDateValid {
-    String message() default "Start date should be before end date.";
+    String message() default "Start date should be before end date or start/end date should be not null.";
 
     Class<?>[] groups() default {};
 

@@ -27,4 +27,11 @@ public class Booking {
     private Item item;
     @ManyToOne
     private User booker;
+
+    public Booking(LocalDateTime start, LocalDateTime end, Item item, User booker) {
+        this.start = start;
+        this.end = end;
+        this.item = item;
+        this.booker = booker;
+    }
 }

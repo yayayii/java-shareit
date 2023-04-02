@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserRequestDto;
+import ru.practicum.shareit.user.dto.UserResponseDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserService {
     //create
     @Transactional
     @Override
-    public UserDto addUser(UserDto userDto) {
+    public UserResponseDto addUser(UserRequestDto userDto) {
         User user = UserMapper.toUser(userDto);
 
         return UserMapper.toUserDto(userRepository.save(user));
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     //read
     @Override
-    public UserDto getUser(int userId) {
+    public UserResponseDto getUser(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User id = " + userId + " doesn't exist."));
 
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<UserDto> getAllUsers() {
+    public Collection<UserResponseDto> getAllUsers() {
         return userRepository.findAll()
                 .stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
     //update
     @Transactional
     @Override
-    public UserDto updateUser(int userId, UserDto userDto) {
+    public UserResponseDto updateUser(int userId, UserRequestDto userDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User id = " + userId + " doesn't exist."));
         User updatedUser = UserMapper.toUser(userDto);
@@ -57,7 +58,6 @@ public class UserServiceImpl implements UserService {
         if (updatedUser.getEmail() != null && !updatedUser.getEmail().isBlank()) {
             user.setEmail(updatedUser.getEmail());
         }
-        user.setId(userId);
 
         return UserMapper.toUserDto(user);
     }

@@ -2,9 +2,7 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemResponseDto;
-import ru.practicum.shareit.item.dto.ItemRequestDto;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -26,8 +24,8 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    CommentDto addComment(
-            @Valid @RequestBody CommentDto commentDto,
+    CommentResponseDto addComment(
+            @Valid @RequestBody CommentRequestDto commentDto,
             @PathVariable int itemId,
             @RequestHeader(value = "X-Sharer-User-Id") int bookerId
     ) {

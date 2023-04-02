@@ -2,7 +2,8 @@ package ru.practicum.shareit.booking.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
+import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.model.RequestState;
 import ru.practicum.shareit.booking.service.BookingService;
 
@@ -17,8 +18,8 @@ public class BookingController {
 
     //create
     @PostMapping
-    BookingDto addBooking(
-            @Valid @RequestBody BookingDto bookingDto,
+    BookingResponseDto addBooking(
+            @Valid @RequestBody BookingRequestDto bookingDto,
             @RequestHeader("X-Sharer-User-Id") int bookerId
     ) {
         return bookingService.addBooking(bookingDto, bookerId);
@@ -26,7 +27,7 @@ public class BookingController {
 
     //read
     @GetMapping("/{bookingId}")
-    BookingDto getBooking(
+    BookingResponseDto getBooking(
             @PathVariable int bookingId,
             @RequestHeader("X-Sharer-User-Id") int userId
     ) {
@@ -34,24 +35,24 @@ public class BookingController {
     }
 
     @GetMapping
-    Collection<BookingDto> getAllBookings(
+    Collection<BookingResponseDto> getAllBookings(
             @RequestHeader("X-Sharer-User-Id") int userId,
-            @RequestParam(name = "state", required = false, defaultValue = "ALL") RequestState state
+            @RequestParam(name = "state", defaultValue = "ALL") RequestState state
     ) {
-        return bookingService.getAllBookings(userId, state, false);
+        return bookingService.getAllBookings(userId, state);
     }
 
     @GetMapping("/owner")
-    Collection<BookingDto> getAllBookingsFromOwner(
+    Collection<BookingResponseDto> getAllBookingsFromOwner(
             @RequestHeader("X-Sharer-User-Id") int userId,
-            @RequestParam(name = "state", required = false, defaultValue = "ALL") RequestState state
+            @RequestParam(name = "state", defaultValue = "ALL") RequestState state
     ) {
-        return bookingService.getAllBookings(userId, state, true);
+        return bookingService.getAllBookingsFromOwner(userId, state);
     }
 
     //update
     @PatchMapping("/{bookingId}")
-    BookingDto updateBooking(
+    BookingResponseDto updateBooking(
             @PathVariable int bookingId,
             @RequestHeader("X-Sharer-User-Id") int ownerId,
             @RequestParam("approved") boolean isApproved

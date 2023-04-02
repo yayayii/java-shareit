@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -55,26 +56,36 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findBookingsByItem_Owner_IdAndStatus(int ownerId, BookingStatus status, Sort sort);
 
-    List<Booking> findBookingsByItem_IdAndStatusIn(int itemId, Set<BookingStatus> set, Sort sort);
-
 
     @Query(value = "select * from booking b " +
             "where item_id = ?1 " +
-            "and start_date < current_timestamp " +
-            "and status in ('WAITING', 'APPROVED')" +
+            "and start_date <= current_timestamp " +
+            "and status like 'APPROVED' " +
             "order by end_date desc " +
             "limit 1",
     nativeQuery = true)
     Booking findLastBookingByItemId(int itemId);
 
+    @Query("select b from Booking b " +
+            "where b.start <= current_timestamp " +
+            "and b.status = 'APPROVED' " +
+            "order by b.end desc")
+    List<Booking> findLastBookings();
+
     @Query(value = "select * from booking b " +
             "where item_id = ?1 " +
             "and start_date > current_timestamp " +
-            "and status in ('WAITING', 'APPROVED')" +
+            "and status like 'APPROVED' " +
             "order by start_date " +
             "limit 1",
             nativeQuery = true)
     Booking findNextBookingByItemId(int itemId);
+
+    @Query("select b from Booking b " +
+            "where b.start > current_timestamp " +
+            "and b.status = 'APPROVED' " +
+            "order by b.start")
+    List<Booking> findNextBookings();
 
     @Query(value = "select * from booking b " +
             "where item_id = ?1 " +
@@ -85,4 +96,13 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "limit 1",
             nativeQuery = true)
     Booking findLastBookingByItemIdAndBookerId(int itemId, int userId);
+
+    @Query(value = "select * from booking b " +
+            "where item_id = ?1 " +
+            "and (?2 > start_date and ?2 < end_date " +
+            "or ?3 > start_date and ?3 < end_date) " +
+            "and status in ('WAITING', 'APPROVED') " +
+            "limit 1",
+            nativeQuery = true)
+    Booking findIntersectedBookingByItemId(int itemId, LocalDateTime start, LocalDateTime end);
 }
