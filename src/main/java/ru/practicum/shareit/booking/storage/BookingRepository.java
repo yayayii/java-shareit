@@ -8,7 +8,6 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findBookingsByBooker_Id(int bookerId, Sort sort);
