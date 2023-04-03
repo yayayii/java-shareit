@@ -21,6 +21,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -101,21 +102,21 @@ public class ItemServiceImpl implements ItemService {
 
         List<ItemResponseDto> items = itemRepository.findByOwner_IdOrderById(ownerId)
                 .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
-        Map<Integer, List<Booking>> lastBookings = bookingRepository.findLastBookings().stream()
-                .collect(Collectors.groupingBy((booking) -> booking.getItem().getId()));
-        Map<Integer, List<Booking>> nextBookings = bookingRepository.findNextBookings().stream()
-                .collect(Collectors.groupingBy((booking) -> booking.getItem().getId()));
+        Map<Integer, Booking> lastBookings = bookingRepository.findLastBookings().stream()
+                .collect(Collectors.toMap((booking) -> booking.getItem().getId(), Function.identity(), (o, o1) -> o));
+        Map<Integer, Booking> nextBookings = bookingRepository.findNextBookings().stream()
+                .collect(Collectors.toMap((booking) -> booking.getItem().getId(), Function.identity(), (o, o1) -> o));
         Map<Integer, List<Comment>> comments = commentRepository.findAll().stream()
                 .collect(Collectors.groupingBy((comment) -> comment.getItem().getId()));
         for (ItemResponseDto itemDto : items) {
             if (lastBookings.containsKey(itemDto.getId())) {
-                Booking lastBooking = lastBookings.get(itemDto.getId()).get(0);
+                Booking lastBooking = lastBookings.get(itemDto.getId());
                 itemDto.setLastBooking(new BookingShortResponseDto(lastBooking.getId(), lastBooking.getBooker().getId()));
             } else {
                 itemDto.setLastBooking(null);
             }
             if (nextBookings.containsKey(itemDto.getId())) {
-                Booking nextBooking = nextBookings.get(itemDto.getId()).get(0);
+                Booking nextBooking = nextBookings.get(itemDto.getId());
                 itemDto.setNextBooking(new BookingShortResponseDto(nextBooking.getId(), nextBooking.getBooker().getId()));
             } else {
                 itemDto.setNextBooking(null);
