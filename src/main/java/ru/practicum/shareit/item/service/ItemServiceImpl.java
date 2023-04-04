@@ -3,115 +3,184 @@ package ru.practicum.shareit.item.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.dto.BookingShortResponseDto;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.ForbiddenActionException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.item.validation.ItemValidator;
-import ru.practicum.shareit.user.storage.UserStorage;
-import ru.practicum.shareit.user.validator.UserValidator;
+import ru.practicum.shareit.item.storage.CommentRepository;
+import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserRepository;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.NoSuchElementException;
-import java.util.TreeSet;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 @Service
 public class ItemServiceImpl implements ItemService {
-    private final ItemValidator itemValidator;
-    private final UserValidator userValidator;
-    private final ItemStorage itemStorage;
-    private final UserStorage userStorage;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     //create
+    @Transactional
     @Override
-    public ItemDto addItem(ItemDto itemDto, int ownerId) {
+    public ItemResponseDto addItem(ItemRequestDto itemDto, int ownerId) {
+        User owner = userRepository.findById(ownerId)
+                .orElseThrow(() -> new NoSuchElementException("User id = " + ownerId + " doesn't exist."));
         Item item = ItemMapper.toItem(itemDto);
+        item.setOwner(owner);
 
-        if (userStorage.getUser(ownerId) == null) {
-            RuntimeException exception = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
-            log.warn(exception.getMessage());
-            throw exception;
+        return ItemMapper.toItemDto(itemRepository.save(item));
+    }
+
+    @Transactional
+    @Override
+    public CommentResponseDto addComment(CommentRequestDto commentDto, int itemId, int bookerId) {
+        User booker = userRepository.findById(bookerId)
+                .orElseThrow(() -> new NoSuchElementException("User id = " + bookerId + " doesn't exist."));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException("Item id = " + itemId + " doesn't exist."));
+        if (item.getOwner().getId() == bookerId) {
+            throw new NoSuchElementException("Owner of the item can't leave comments on his own items.");
+        }
+        if (bookingRepository.findLastBookingByItemIdAndBookerId(itemId, bookerId) == null) {
+            throw new ValidationException("You must have this item in the past in order to leave a comment.");
         }
 
-        item.setOwner(userStorage.getUser(ownerId));
-        Item addedItem = itemStorage.addItem(item);
-        userStorage.getUser(ownerId).getItemIds().add(addedItem.getId());
-        return ItemMapper.toItemDto(addedItem);
+        Comment comment = CommentMapper.toComment(commentDto);
+        comment.setItem(item);
+        comment.setAuthor(booker);
+        comment.setCreated(LocalDateTime.now());
+
+        return CommentMapper.toCommentDto(commentRepository.save(comment));
     }
 
     //read
     @Override
-    public ItemDto getItem(int itemId) {
-        if (itemStorage.getItem(itemId) == null) {
-            RuntimeException exception = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
-            log.warn(exception.getMessage());
-            throw exception;
-        }
-
-        return ItemMapper.toItemDto(itemStorage.getItem(itemId));
-    }
-
-    @Override
-    public Collection<ItemDto> getAllItems(int ownerId) {
-        if (ownerId == 0) {
-            return itemStorage.getAllItems().values()
-                    .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
-        } else {
-            if (userStorage.getUser(ownerId) == null) {
-                RuntimeException exception = new NoSuchElementException("User with id = " + ownerId + " doesn't exist.");
-                log.warn(exception.getMessage());
-                throw exception;
+    public ItemResponseDto getItem(int itemId, int userId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException("Item id = " + itemId + " doesn't exist."));
+        ItemResponseDto itemDto = ItemMapper.toItemDto(item);
+        if (userId == item.getOwner().getId()) {
+            Booking lastBooking = bookingRepository.findLastBookingByItemId(itemDto.getId());
+            Booking nextBooking = bookingRepository.findNextBookingByItemId(itemDto.getId());
+            if (lastBooking == null) {
+                itemDto.setLastBooking(null);
+            } else {
+                itemDto.setLastBooking(new BookingShortResponseDto(lastBooking.getId(), lastBooking.getBooker().getId()));
             }
-            return itemStorage.getAllItems(ownerId, userStorage.getUser(ownerId).getItemIds())
-                    .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
+            if (nextBooking == null) {
+                itemDto.setNextBooking(null);
+            } else {
+                itemDto.setNextBooking(new BookingShortResponseDto(nextBooking.getId(), nextBooking.getBooker().getId()));
+            }
         }
+        itemDto.setComments(commentRepository.findCommentsByItem_Id(itemId)
+                .stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()));
+
+        return itemDto;
     }
 
     @Override
-    public Collection<ItemDto> getSearchedItems(String searchText) {
-        if (searchText.isEmpty() || searchText.isBlank()) {
+    public Collection<ItemResponseDto> getAllItems(int ownerId) {
+        if (!userRepository.existsById(ownerId)) {
+            throw new NoSuchElementException("User id = " + ownerId + " doesn't exist.");
+        }
+
+        List<ItemResponseDto> items = itemRepository.findByOwner_IdOrderById(ownerId)
+                .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        Map<Integer, Booking> lastBookings = bookingRepository.findLastBookings().stream()
+                .collect(Collectors.toMap((booking) -> booking.getItem().getId(), Function.identity(), (o, o1) -> o));
+        Map<Integer, Booking> nextBookings = bookingRepository.findNextBookings().stream()
+                .collect(Collectors.toMap((booking) -> booking.getItem().getId(), Function.identity(), (o, o1) -> o));
+        Map<Integer, List<Comment>> comments = commentRepository.findAll().stream()
+                .collect(Collectors.groupingBy((comment) -> comment.getItem().getId()));
+        for (ItemResponseDto itemDto : items) {
+            if (lastBookings.containsKey(itemDto.getId())) {
+                Booking lastBooking = lastBookings.get(itemDto.getId());
+                itemDto.setLastBooking(new BookingShortResponseDto(lastBooking.getId(), lastBooking.getBooker().getId()));
+            } else {
+                itemDto.setLastBooking(null);
+            }
+            if (nextBookings.containsKey(itemDto.getId())) {
+                Booking nextBooking = nextBookings.get(itemDto.getId());
+                itemDto.setNextBooking(new BookingShortResponseDto(nextBooking.getId(), nextBooking.getBooker().getId()));
+            } else {
+                itemDto.setNextBooking(null);
+            }
+            itemDto.setComments(comments.getOrDefault(itemDto.getId(), Collections.emptyList())
+                    .stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()));
+        }
+
+        return items;
+    }
+
+    @Override
+    public Collection<ItemResponseDto> getSearchedItems(String searchText) {
+        if (searchText.isBlank()) {
             return Collections.emptyList();
         }
-        return itemStorage.getSearchedItems(searchText)
-                .stream().map(ItemMapper::toItemDto).collect(Collectors.toCollection(TreeSet::new));
+
+        return itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(searchText, searchText)
+                .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     //update
+    @Transactional
     @Override
-    public ItemDto updateItem(int itemId, ItemDto itemDto, int ownerId) {
-        Item item = ItemMapper.toItem(itemDto);
-
-        if (item.getName() == null && item.getDescription() == null && item.getAvailable() == null) {
-            RuntimeException exception = new ValidationException("There is nothing to update.");
-            log.warn(exception.getMessage());
-            throw exception;
+    public ItemResponseDto updateItem(int itemId, ItemRequestDto itemDto, int ownerId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException("Item id = " + itemId + " doesn't exist."));
+        if (item.getOwner() == null) {
+            User owner = userRepository.findById(ownerId)
+                    .orElseThrow(() -> new NoSuchElementException("User id = " + ownerId + " doesn't exist."));
+            item.setOwner(owner);
+        } else {
+            if (item.getOwner().getId() != ownerId) {
+                throw new ForbiddenActionException("Changing owner is forbidden.");
+            }
         }
-        itemValidator.validateUpdatedItem(itemId, ownerId);
+        Item updatedItem = ItemMapper.toItem(itemDto);
+        if (updatedItem.getName() != null && !updatedItem.getName().isBlank()) {
+            item.setName(updatedItem.getName());
+        }
+        if (updatedItem.getDescription() != null && !updatedItem.getDescription().isBlank()) {
+            item.setDescription(updatedItem.getDescription());
+        }
+        if (updatedItem.getAvailable() != null) {
+            item.setAvailable(updatedItem.getAvailable());
+        }
 
-        item.setId(itemId);
-        item.setOwner(userStorage.getUser(ownerId));
-        return ItemMapper.toItemDto(itemStorage.updateItem(item));
+        return ItemMapper.toItemDto(item);
     }
 
     //delete
+    @Transactional
     @Override
     public void deleteItem(int itemId) {
-        if (itemStorage.getItem(itemId) == null) {
-            RuntimeException exception = new NoSuchElementException("Item with id = " + itemId + " doesn't exist.");
-            log.warn(exception.getMessage());
-            throw exception;
+        if (!itemRepository.existsById(itemId)) {
+            throw new NoSuchElementException("Item id = " + itemId + " doesn't exist.");
         }
-        itemStorage.getItem(itemId).getOwner().getItemIds().remove(itemId);
-        itemStorage.deleteItem(itemId);
+
+        itemRepository.deleteById(itemId);
     }
 
+    @Transactional
     @Override
     public void deleteAllItems() {
-        itemStorage.deleteAllItems();
+        itemRepository.deleteAll();
     }
 }

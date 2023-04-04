@@ -3,78 +3,79 @@ package ru.practicum.shareit.user.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.user.dto.UserDto;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.user.dto.UserRequestDto;
+import ru.practicum.shareit.user.dto.UserResponseDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
-import ru.practicum.shareit.user.validator.UserValidator;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserValidator userValidator;
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
     //create
+    @Transactional
     @Override
-    public UserDto addUser(UserDto userDto) {
+    public UserResponseDto addUser(UserRequestDto userDto) {
         User user = UserMapper.toUser(userDto);
-        userValidator.validateNewUser(user);
-        return UserMapper.toUserDto(userStorage.addUser(user));
+
+        return UserMapper.toUserDto(userRepository.save(user));
     }
 
     //read
     @Override
-    public UserDto getUser(int userId) {
-        if (userStorage.getUser(userId) == null) {
-            RuntimeException exception = new NoSuchElementException("User with id = " + userId + " doesn't exist.");
-            log.warn(exception.getMessage());
-            throw exception;
-        }
-        return UserMapper.toUserDto(userStorage.getUser(userId));
+    public UserResponseDto getUser(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User id = " + userId + " doesn't exist."));
+
+        return UserMapper.toUserDto(user);
     }
 
     @Override
-    public Collection<UserDto> getAllUsers() {
-        return userStorage.getAllUsers().values()
-                .stream().map(UserMapper::toUserDto).collect(Collectors.toCollection(TreeSet::new));
+    public Collection<UserResponseDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
     //update
+    @Transactional
     @Override
-    public UserDto updateUser(int userId, UserDto userDto) {
-        User user = UserMapper.toUser(userDto);
-        if (user.getName() == null && user.getEmail() == null) {
-            RuntimeException exception = new ValidationException("There is nothing to update.");
-            log.warn(exception.getMessage());
-            throw exception;
+    public UserResponseDto updateUser(int userId, UserRequestDto userDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User id = " + userId + " doesn't exist."));
+        User updatedUser = UserMapper.toUser(userDto);
+        if (updatedUser.getName() != null && !updatedUser.getName().isBlank()) {
+            user.setName(updatedUser.getName());
         }
-        userValidator.validateUpdatedUser(userId, user);
+        if (updatedUser.getEmail() != null && !updatedUser.getEmail().isBlank()) {
+            user.setEmail(updatedUser.getEmail());
+        }
 
-        user.setId(userId);
-        return UserMapper.toUserDto(userStorage.updateUser(user));
+        return UserMapper.toUserDto(user);
     }
 
     //delete
+    @Transactional
     @Override
     public void deleteUser(int userId) {
-        if (userStorage.getUser(userId) == null) {
-            RuntimeException exception = new NoSuchElementException("User with id = " + userId + " doesn't exist.");
-            log.warn(exception.getMessage());
-            throw exception;
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("User id = " + userId + " doesn't exist.");
         }
-        userStorage.deleteUser(userId);
+
+        userRepository.deleteById(userId);
     }
 
+    @Transactional
     @Override
     public void deleteAllUsers() {
-        userStorage.deleteAllUsers();
+        userRepository.deleteAll();
     }
 }

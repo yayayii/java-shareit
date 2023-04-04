@@ -1,19 +1,24 @@
 package ru.practicum.shareit.user.model;
 
-import lombok.Data;
+import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.*;
 
-@Data
+@Entity
+@Table(name = "user_account")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    @Column(unique = true)
     private String email;
-    private Set<Integer> itemIds = new HashSet<>();
 
-    public User(int id, String name, String email) {
-        this.id = id;
+    public User(String name, String email) {
         this.name = name;
         this.email = email;
     }
