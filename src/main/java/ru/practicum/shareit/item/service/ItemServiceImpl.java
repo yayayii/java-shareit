@@ -1,12 +1,11 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingShortResponseDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.exception.ForbiddenActionException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.*;
@@ -14,10 +13,10 @@ import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.CommentRepository;
-import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.item.dao.CommentRepository;
+import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserRepository;
+import ru.practicum.shareit.user.dao.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -25,7 +24,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-@Slf4j
 @Transactional(readOnly = true)
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -70,10 +68,10 @@ public class ItemServiceImpl implements ItemService {
 
     //read
     @Override
-    public ItemResponseDto getItem(int itemId, int userId) {
+    public ItemFullResponseDto getItem(int itemId, int userId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NoSuchElementException("Item id = " + itemId + " doesn't exist."));
-        ItemResponseDto itemDto = ItemMapper.toItemDto(item);
+        ItemFullResponseDto itemDto = ItemMapper.toFullItemDto(item);
         if (userId == item.getOwner().getId()) {
             Booking lastBooking = bookingRepository.findLastBookingByItemId(itemDto.getId());
             Booking nextBooking = bookingRepository.findNextBookingByItemId(itemDto.getId());
@@ -95,20 +93,20 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<ItemResponseDto> getAllItems(int ownerId) {
+    public Collection<ItemFullResponseDto> getAllItems(int ownerId) {
         if (!userRepository.existsById(ownerId)) {
             throw new NoSuchElementException("User id = " + ownerId + " doesn't exist.");
         }
 
-        List<ItemResponseDto> items = itemRepository.findByOwner_IdOrderById(ownerId)
-                .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        List<ItemFullResponseDto> items = itemRepository.findByOwner_IdOrderById(ownerId)
+                .stream().map(ItemMapper::toFullItemDto).collect(Collectors.toList());
         Map<Integer, Booking> lastBookings = bookingRepository.findLastBookings().stream()
                 .collect(Collectors.toMap((booking) -> booking.getItem().getId(), Function.identity(), (o, o1) -> o));
         Map<Integer, Booking> nextBookings = bookingRepository.findNextBookings().stream()
                 .collect(Collectors.toMap((booking) -> booking.getItem().getId(), Function.identity(), (o, o1) -> o));
         Map<Integer, List<Comment>> comments = commentRepository.findAll().stream()
                 .collect(Collectors.groupingBy((comment) -> comment.getItem().getId()));
-        for (ItemResponseDto itemDto : items) {
+        for (ItemFullResponseDto itemDto : items) {
             if (lastBookings.containsKey(itemDto.getId())) {
                 Booking lastBooking = lastBookings.get(itemDto.getId());
                 itemDto.setLastBooking(new BookingShortResponseDto(lastBooking.getId(), lastBooking.getBooker().getId()));

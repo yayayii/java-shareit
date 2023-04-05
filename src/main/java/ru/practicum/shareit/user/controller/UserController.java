@@ -19,24 +19,24 @@ public class UserController {
 
     //create
     @PostMapping
-    UserResponseDto addUser(@Validated(Create.class) @RequestBody UserRequestDto userDto) {
+    public UserResponseDto addUser(@Validated(Create.class) @RequestBody UserRequestDto userDto) {
         return userService.addUser(userDto);
     }
 
     //read
     @GetMapping("/{userId}")
-    UserResponseDto getUser(@PathVariable int userId) {
+    public UserResponseDto getUser(@PathVariable int userId) {
         return userService.getUser(userId);
     }
 
     @GetMapping
-    Collection<UserResponseDto> getAllUsers() {
+    public Collection<UserResponseDto> getAllUsers() {
         return userService.getAllUsers();
     }
 
     //update
     @PatchMapping("/{userId}")
-    UserResponseDto updateUser(
+    public UserResponseDto updateUser(
             @PathVariable int userId,
             @Validated(Update.class) @RequestBody UserRequestDto userDto
     ) {
@@ -45,12 +45,12 @@ public class UserController {
 
     //delete
     @DeleteMapping("/{userId}")
-    void deleteUser(@PathVariable int userId) {
+    public void deleteUser(@PathVariable int userId) {
         userService.deleteUser(userId);
     }
 
     @DeleteMapping
-    void deleteAllUsers() {
+    public void deleteAllUsers() {
         userService.deleteAllUsers();
     }
 }

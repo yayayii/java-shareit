@@ -13,9 +13,9 @@ public interface BookingService {
     //read
     BookingResponseDto getBooking(int bookingId, int userId);
 
-    Collection<BookingResponseDto> getAllBookings(int userId, RequestState state);
+    Collection<BookingResponseDto> getAllBookings(int bookerId, RequestState state);
 
-    Collection<BookingResponseDto> getAllBookingsFromOwner(int userId, RequestState state);
+    Collection<BookingResponseDto> getAllBookingsFromOwner(int ownerId, RequestState state);
 
     //update
     BookingResponseDto updateBooking(int bookingId, int ownerId, boolean isApproved);

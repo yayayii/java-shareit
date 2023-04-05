@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.mapper;
 
 import lombok.experimental.UtilityClass;
+import ru.practicum.shareit.item.dto.ItemFullResponseDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.dto.ItemRequestDto;
 import ru.practicum.shareit.item.dto.ItemShortResponseDto;
@@ -8,6 +9,15 @@ import ru.practicum.shareit.item.model.Item;
 
 @UtilityClass
 public class ItemMapper {
+    public ItemFullResponseDto toFullItemDto(Item item) {
+        return new ItemFullResponseDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable()
+        );
+    }
+
     public ItemResponseDto toItemDto(Item item) {
         return new ItemResponseDto(
                 item.getId(),

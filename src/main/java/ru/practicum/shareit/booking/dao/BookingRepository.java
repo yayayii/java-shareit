@@ -1,14 +1,16 @@
-package ru.practicum.shareit.booking.storage;
+package ru.practicum.shareit.booking.dao;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findBookingsByBooker_Id(int bookerId, Sort sort);
 
@@ -16,19 +18,19 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "join b.booker u " +
             "where u.id = ?1 " +
             "and current_timestamp between b.start and b.end")
-    List<Booking> findCurrentBookings(int bookerId, Sort sort);
+    List<Booking> findCurrentBookingsByBooker_Id(int bookerId, Sort sort);
 
     @Query("select b  from Booking b " +
             "join b.booker u " +
             "where u.id = ?1 " +
             "and b.end < current_timestamp")
-    List<Booking> findPastBookings(int bookerId, Sort sort);
+    List<Booking> findPastBookingsByBooker_Id(int bookerId, Sort sort);
 
     @Query("select b  from Booking b " +
             "join b.booker u " +
             "where u.id = ?1 " +
             "and b.start > current_timestamp")
-    List<Booking> findFutureBookings(int bookerId, Sort sort);
+    List<Booking> findFutureBookingsByBooker_Id(int bookerId, Sort sort);
 
     List<Booking> findBookingsByBooker_IdAndStatus(int bookerId, BookingStatus status, Sort sort);
 

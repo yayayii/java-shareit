@@ -1,12 +1,14 @@
-package ru.practicum.shareit.item.storage;
+package ru.practicum.shareit.item.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
+@Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
     List<Item> findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(String name, String description);
 
-    List<Item> findByOwner_IdOrderById(int id);
+    List<Item> findByOwner_IdOrderById(int ownerId);
 }

@@ -11,9 +11,9 @@ public interface ItemService {
     CommentResponseDto addComment(CommentRequestDto commentDto, int itemId, int userId);
 
     //read
-    ItemResponseDto getItem(int itemId, int userId);
+    ItemFullResponseDto getItem(int itemId, int userId);
 
-    Collection<ItemResponseDto> getAllItems(int ownerId);
+    Collection<ItemFullResponseDto> getAllItems(int ownerId);
 
     Collection<ItemResponseDto> getSearchedItems(String searchText);
 

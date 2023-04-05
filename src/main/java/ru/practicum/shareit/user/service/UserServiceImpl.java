@@ -1,21 +1,19 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserRequestDto;
 import ru.practicum.shareit.user.dto.UserResponseDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserRepository;
+import ru.practicum.shareit.user.dao.UserRepository;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-@Slf4j
 @Transactional(readOnly = true)
 @Service
 public class UserServiceImpl implements UserService {

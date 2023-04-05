@@ -18,7 +18,7 @@ public class BookingController {
 
     //create
     @PostMapping
-    BookingResponseDto addBooking(
+    public BookingResponseDto addBooking(
             @Valid @RequestBody BookingRequestDto bookingDto,
             @RequestHeader("X-Sharer-User-Id") int bookerId
     ) {
@@ -27,7 +27,7 @@ public class BookingController {
 
     //read
     @GetMapping("/{bookingId}")
-    BookingResponseDto getBooking(
+    public BookingResponseDto getBooking(
             @PathVariable int bookingId,
             @RequestHeader("X-Sharer-User-Id") int userId
     ) {
@@ -35,24 +35,24 @@ public class BookingController {
     }
 
     @GetMapping
-    Collection<BookingResponseDto> getAllBookings(
-            @RequestHeader("X-Sharer-User-Id") int userId,
+    public Collection<BookingResponseDto> getAllBookings(
+            @RequestHeader("X-Sharer-User-Id") int bookerId,
             @RequestParam(name = "state", defaultValue = "ALL") RequestState state
     ) {
-        return bookingService.getAllBookings(userId, state);
+        return bookingService.getAllBookings(bookerId, state);
     }
 
     @GetMapping("/owner")
-    Collection<BookingResponseDto> getAllBookingsFromOwner(
-            @RequestHeader("X-Sharer-User-Id") int userId,
+    public Collection<BookingResponseDto> getAllBookingsFromOwner(
+            @RequestHeader("X-Sharer-User-Id") int ownerId,
             @RequestParam(name = "state", defaultValue = "ALL") RequestState state
     ) {
-        return bookingService.getAllBookingsFromOwner(userId, state);
+        return bookingService.getAllBookingsFromOwner(ownerId, state);
     }
 
     //update
     @PatchMapping("/{bookingId}")
-    BookingResponseDto updateBooking(
+    public BookingResponseDto updateBooking(
             @PathVariable int bookingId,
             @RequestHeader("X-Sharer-User-Id") int ownerId,
             @RequestParam("approved") boolean isApproved

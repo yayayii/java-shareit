@@ -16,7 +16,7 @@ public class ItemController {
 
     //create
     @PostMapping
-    ItemResponseDto addItem(
+    public ItemResponseDto addItem(
             @Valid @RequestBody ItemRequestDto itemDto,
             @RequestHeader("X-Sharer-User-Id") int ownerId
     ) {
@@ -24,36 +24,36 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    CommentResponseDto addComment(
+    public CommentResponseDto addComment(
             @Valid @RequestBody CommentRequestDto commentDto,
             @PathVariable int itemId,
-            @RequestHeader(value = "X-Sharer-User-Id") int bookerId
+            @RequestHeader("X-Sharer-User-Id") int bookerId
     ) {
         return itemService.addComment(commentDto, itemId, bookerId);
     }
 
     //read
     @GetMapping("/{itemId}")
-    ItemResponseDto getItem(
+    public ItemFullResponseDto getItem(
             @PathVariable int itemId,
-            @RequestHeader(value = "X-Sharer-User-Id") int userId
+            @RequestHeader("X-Sharer-User-Id") int userId
     ) {
         return itemService.getItem(itemId, userId);
     }
 
     @GetMapping
-    Collection<ItemResponseDto> getAllItems(@RequestHeader(value = "X-Sharer-User-Id") int ownerId) {
+    public Collection<ItemFullResponseDto> getAllItems(@RequestHeader("X-Sharer-User-Id") int ownerId) {
         return itemService.getAllItems(ownerId);
     }
 
     @GetMapping("/search")
-    Collection<ItemResponseDto> getSearchedItems(@RequestParam("text") String searchText) {
+    public Collection<ItemResponseDto> getSearchedItems(@RequestParam("text") String searchText) {
         return itemService.getSearchedItems(searchText);
     }
 
     //update
     @PatchMapping("/{itemId}")
-    ItemResponseDto updateItem(
+    public ItemResponseDto updateItem(
             @PathVariable int itemId,
             @RequestBody ItemRequestDto itemDto,
             @RequestHeader("X-Sharer-User-Id") int ownerId
@@ -63,12 +63,12 @@ public class ItemController {
 
     //delete
     @DeleteMapping("/{itemId}")
-    void deleteItem(@PathVariable int itemId) {
+    public void deleteItem(@PathVariable int itemId) {
         itemService.deleteItem(itemId);
     }
 
     @DeleteMapping
-    void deleteAllItems() {
+    public void deleteAllItems() {
         itemService.deleteAllItems();
     }
 }
