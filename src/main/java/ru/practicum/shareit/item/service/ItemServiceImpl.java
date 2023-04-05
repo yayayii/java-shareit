@@ -15,6 +15,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.dao.CommentRepository;
 import ru.practicum.shareit.item.dao.ItemRepository;
+import ru.practicum.shareit.request.dao.ItemRequestRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dao.UserRepository;
 
@@ -31,6 +33,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     //create
     @Transactional
@@ -40,6 +43,11 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NoSuchElementException("User id = " + ownerId + " doesn't exist."));
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(owner);
+        if (itemDto.getRequestId() != null) {
+            ItemRequest itemRequest = itemRequestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new NoSuchElementException("Item Request id = " + itemDto.getRequestId() + " doesn't exist."));
+            item.setRequest(itemRequest);
+        }
 
         return ItemMapper.toItemDto(itemRepository.save(item));
     }

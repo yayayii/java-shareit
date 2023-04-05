@@ -15,14 +15,16 @@ public class ItemFullResponseDto {
     private String name;
     private String description;
     private Boolean available;
+    private Integer requestId;
     private BookingShortResponseDto lastBooking;
     private BookingShortResponseDto nextBooking;
     private List<CommentResponseDto> comments;
 
-    public ItemFullResponseDto(int id, String name, String description, Boolean available) {
+    public ItemFullResponseDto(int id, String name, String description, Boolean available, Integer requestId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
+        this.requestId = requestId;
     }
 }
