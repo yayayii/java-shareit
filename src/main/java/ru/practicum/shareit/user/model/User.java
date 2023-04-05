@@ -4,12 +4,12 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "user_account")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "user_account")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

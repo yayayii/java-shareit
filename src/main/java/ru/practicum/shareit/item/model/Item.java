@@ -6,12 +6,12 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
-@Entity
-@Table
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
