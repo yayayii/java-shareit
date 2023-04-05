@@ -9,7 +9,9 @@ import java.util.List;
 public interface ItemRequestService {
     ItemRequestResponseDto addItemRequest(ItemRequestRequestDto itemRequestDto, int requesterId);
 
-    List<ItemRequestFullResponseDto> getItemRequests(int requesterId);
+    ItemRequestFullResponseDto getItemRequest(int userId, int requestId);
 
-    ItemRequestFullResponseDto getItemRequest(int requestId);
+    List<ItemRequestFullResponseDto> getOwnItemRequests(int requesterId);
+
+    List<ItemRequestFullResponseDto> getOtherItemRequests(int userId, int from, int size);
 }

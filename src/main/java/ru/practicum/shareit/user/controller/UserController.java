@@ -9,7 +9,7 @@ import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.util.Create;
 import ru.practicum.shareit.util.Update;
 
-import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Collection<UserResponseDto> getAllUsers() {
+    public List<UserResponseDto> getAllUsers() {
         return userService.getAllUsers();
     }
 

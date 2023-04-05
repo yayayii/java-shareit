@@ -3,7 +3,7 @@ package ru.practicum.shareit.user.service;
 import ru.practicum.shareit.user.dto.UserRequestDto;
 import ru.practicum.shareit.user.dto.UserResponseDto;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface UserService {
     //create
@@ -12,7 +12,7 @@ public interface UserService {
     //read
     UserResponseDto getUser(int userId);
 
-    Collection<UserResponseDto> getAllUsers();
+    List<UserResponseDto> getAllUsers();
 
     //update
     UserResponseDto updateUser(int userId, UserRequestDto userDto);

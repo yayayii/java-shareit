@@ -101,13 +101,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<ItemFullResponseDto> getAllItems(int ownerId) {
+    public List<ItemFullResponseDto> getAllItems(int ownerId, int from, int size) {
         if (!userRepository.existsById(ownerId)) {
             throw new NoSuchElementException("User id = " + ownerId + " doesn't exist.");
         }
+        if (from < 0) {
+            throw new ValidationException("\"from\" should be positive or zero.");
+        }
+        if (size <= 0) {
+            throw new ValidationException("\"size\" should be positive.");
+        }
 
         List<ItemFullResponseDto> items = itemRepository.findByOwner_IdOrderById(ownerId)
-                .stream().map(ItemMapper::toFullItemDto).collect(Collectors.toList());
+                .stream().skip(from).limit(size).map(ItemMapper::toFullItemDto).collect(Collectors.toList());
         Map<Integer, Booking> lastBookings = bookingRepository.findLastBookings().stream()
                 .collect(Collectors.toMap((booking) -> booking.getItem().getId(), Function.identity(), (o, o1) -> o));
         Map<Integer, Booking> nextBookings = bookingRepository.findNextBookings().stream()
@@ -135,13 +141,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<ItemResponseDto> getSearchedItems(String searchText) {
+    public List<ItemResponseDto> getSearchedItems(String searchText, int from, int size) {
         if (searchText.isBlank()) {
             return Collections.emptyList();
         }
+        if (from < 0) {
+            throw new ValidationException("\"from\" should be positive or zero.");
+        }
+        if (size <= 0) {
+            throw new ValidationException("\"size\" should be positive.");
+        }
 
         return itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(searchText, searchText)
-                .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+                .stream().skip(from).limit(size).map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     //update

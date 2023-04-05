@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import ru.practicum.shareit.item.dto.*;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface ItemService {
     //create
@@ -13,9 +13,9 @@ public interface ItemService {
     //read
     ItemFullResponseDto getItem(int itemId, int userId);
 
-    Collection<ItemFullResponseDto> getAllItems(int ownerId);
+    List<ItemFullResponseDto> getAllItems(int ownerId, int from, int size);
 
-    Collection<ItemResponseDto> getSearchedItems(String searchText);
+    List<ItemResponseDto> getSearchedItems(String searchText, int from, int size);
 
     //update
     ItemResponseDto updateItem(int itemId, ItemRequestDto itemDto, int ownerId);

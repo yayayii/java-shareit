@@ -10,43 +10,23 @@ import ru.practicum.shareit.item.model.Item;
 @UtilityClass
 public class ItemMapper {
     public ItemFullResponseDto toFullItemDto(Item item) {
-        if (item.getRequest() == null) {
-            return new ItemFullResponseDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    null
-            );
-        } else {
-            return new ItemFullResponseDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    item.getRequest().getId()
-            );
-        }
+        return new ItemFullResponseDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                item.getRequest() == null ? null : item.getRequest().getId()
+        );
     }
 
     public ItemResponseDto toItemDto(Item item) {
-        if (item.getRequest() == null) {
-            return new ItemResponseDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    null
-            );
-        } else {
-            return new ItemResponseDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    item.getRequest().getId()
-            );
-        }
+        return new ItemResponseDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                item.getRequest() == null ? null : item.getRequest().getId()
+        );
     }
 
     public ItemShortResponseDto toShortItemDto(Item item) {

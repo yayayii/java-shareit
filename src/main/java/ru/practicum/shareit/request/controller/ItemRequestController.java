@@ -24,13 +24,24 @@ public class ItemRequestController {
         return itemRequestService.addItemRequest(itemRequestDto, requesterId);
     }
 
-    @GetMapping
-    public List<ItemRequestFullResponseDto> getItemRequests(@RequestHeader("X-Sharer-User-Id") int requesterId) {
-        return itemRequestService.getItemRequests(requesterId);
+    @GetMapping("/{requestId}")
+    public ItemRequestFullResponseDto getItemRequest(
+            @RequestHeader("X-Sharer-User-Id") int userId,
+            @PathVariable int requestId) {
+        return itemRequestService.getItemRequest(userId, requestId);
     }
 
-    @GetMapping("/{requestId}")
-    public ItemRequestFullResponseDto getItemRequest(@PathVariable int requestId) {
-        return itemRequestService.getItemRequest(requestId);
+    @GetMapping
+    public List<ItemRequestFullResponseDto> getOwnItemRequests(@RequestHeader("X-Sharer-User-Id") int requesterId) {
+        return itemRequestService.getOwnItemRequests(requesterId);
+    }
+
+    @GetMapping("/all")
+    public List<ItemRequestFullResponseDto> getOtherItemRequests(
+            @RequestHeader("X-Sharer-User-Id") int userId,
+            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "999") int size
+    ) {
+        return itemRequestService.getOtherItemRequests(userId, from, size);
     }
 }

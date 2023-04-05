@@ -8,7 +8,7 @@ import ru.practicum.shareit.booking.model.RequestState;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
-import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -35,19 +35,23 @@ public class BookingController {
     }
 
     @GetMapping
-    public Collection<BookingResponseDto> getAllBookings(
+    public List<BookingResponseDto> getAllBookings(
             @RequestHeader("X-Sharer-User-Id") int bookerId,
-            @RequestParam(name = "state", defaultValue = "ALL") RequestState state
+            @RequestParam(name = "state", defaultValue = "ALL") RequestState state,
+            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "999") int size
     ) {
-        return bookingService.getAllBookings(bookerId, state);
+        return bookingService.getAllBookings(bookerId, state, from, size);
     }
 
     @GetMapping("/owner")
-    public Collection<BookingResponseDto> getAllBookingsFromOwner(
+    public List<BookingResponseDto> getAllBookingsFromOwner(
             @RequestHeader("X-Sharer-User-Id") int ownerId,
-            @RequestParam(name = "state", defaultValue = "ALL") RequestState state
+            @RequestParam(name = "state", defaultValue = "ALL") RequestState state,
+            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "999") int size
     ) {
-        return bookingService.getAllBookingsFromOwner(ownerId, state);
+        return bookingService.getAllBookingsFromOwner(ownerId, state, from, size);
     }
 
     //update

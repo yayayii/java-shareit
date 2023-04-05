@@ -3,6 +3,8 @@ package ru.practicum.shareit.request.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.ItemRequestFullResponseDto;
 import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
@@ -18,11 +20,13 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     @Override
     public ItemRequestResponseDto addItemRequest(ItemRequestRequestDto itemRequestDto, int requesterId) {
         User requester = userRepository.findById(requesterId)
@@ -35,19 +39,38 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestFullResponseDto> getItemRequests(int requesterId) {
+    public ItemRequestFullResponseDto getItemRequest(int userId, int requestId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("User id = " + userId + " doesn't exist.");
+        }
+        ItemRequest itemRequest = itemRequestRepository.findById(requestId)
+                .orElseThrow(() -> new NoSuchElementException("Item Request id = " + requestId + " doesn't exist."));
+        return ItemRequestMapper.toFullItemRequestDto(itemRequest);
+    }
+
+    @Override
+    public List<ItemRequestFullResponseDto> getOtherItemRequests(int userId, int from, int size) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("User id = " + userId + " doesn't exist.");
+        }
+        if (from < 0) {
+            throw new ValidationException("\"from\" should be positive or zero.");
+        }
+        if (size <= 0) {
+            throw new ValidationException("\"size\" should be positive.");
+        }
+
+        return itemRequestRepository.findAllByRequester_IdNot(userId, Sort.by("created").descending())
+                .stream().skip(from).limit(size).map(ItemRequestMapper::toFullItemRequestDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ItemRequestFullResponseDto> getOwnItemRequests(int requesterId) {
         if (!userRepository.existsById(requesterId)) {
             throw new NoSuchElementException("User id = " + requesterId + " doesn't exist.");
         }
 
-        return itemRequestRepository.findAllByRequester_Id(requesterId, Sort.by(Sort.Order.desc("created")))
+        return itemRequestRepository.findAllByRequester_Id(requesterId, Sort.by("created").descending())
                 .stream().map(ItemRequestMapper::toFullItemRequestDto).collect(Collectors.toList());
-    }
-
-    @Override
-    public ItemRequestFullResponseDto getItemRequest(int requestId) {
-        ItemRequest itemRequest = itemRequestRepository.findById(requestId)
-                .orElseThrow(() -> new NoSuchElementException("Item Request id = " + requestId + " doesn't exist."));
-        return ItemRequestMapper.toFullItemRequestDto(itemRequest);
     }
 }
