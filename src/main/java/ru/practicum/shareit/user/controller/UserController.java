@@ -48,9 +48,4 @@ public class UserController {
     public void deleteUser(@PathVariable int userId) {
         userService.deleteUser(userId);
     }
-
-    @DeleteMapping
-    public void deleteAllUsers() {
-        userService.deleteAllUsers();
-    }
 }

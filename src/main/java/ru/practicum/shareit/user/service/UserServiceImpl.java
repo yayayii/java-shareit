@@ -70,10 +70,4 @@ public class UserServiceImpl implements UserService {
 
         userRepository.deleteById(userId);
     }
-
-    @Transactional
-    @Override
-    public void deleteAllUsers() {
-        userRepository.deleteAll();
-    }
 }
