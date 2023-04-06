@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.ItemRequestFullResponseDto;
 import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
@@ -52,12 +51,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestFullResponseDto> getOtherItemRequests(int userId, int from, int size) {
         if (!userRepository.existsById(userId)) {
             throw new NoSuchElementException("User id = " + userId + " doesn't exist.");
-        }
-        if (from < 0) {
-            throw new ValidationException("\"from\" should be positive or zero.");
-        }
-        if (size <= 0) {
-            throw new ValidationException("\"size\" should be positive.");
         }
 
         return itemRequestRepository.findAllByRequester_IdNot(userId, Sort.by("created").descending())

@@ -74,12 +74,6 @@ public class BookingServiceImpl implements BookingService {
         if (!userRepository.existsById(bookerId)) {
             throw new NoSuchElementException("User id = " + bookerId + " doesn't exist.");
         }
-        if (from < 0) {
-            throw new ValidationException("\"from\" should be positive or zero.");
-        }
-        if (size <= 0) {
-            throw new ValidationException("\"size\" should be positive.");
-        }
 
         switch (state) {
             case ALL:
@@ -107,12 +101,6 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponseDto> getAllBookingsFromOwner(int ownerId, RequestState state, int from, int size) {
         if (!userRepository.existsById(ownerId)) {
             throw new NoSuchElementException("User id = " + ownerId + " doesn't exist.");
-        }
-        if (from < 0) {
-            throw new ValidationException("\"from\" should be positive or zero.");
-        }
-        if (size <= 0) {
-            throw new ValidationException("\"size\" should be positive.");
         }
 
         switch (state) {

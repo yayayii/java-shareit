@@ -8,7 +8,11 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.exception.ForbiddenActionException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.dto.comment.CommentRequestDto;
+import ru.practicum.shareit.item.dto.comment.CommentResponseDto;
+import ru.practicum.shareit.item.dto.item.ItemFullResponseDto;
+import ru.practicum.shareit.item.dto.item.ItemRequestDto;
+import ru.practicum.shareit.item.dto.item.ItemResponseDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
@@ -83,16 +87,10 @@ public class ItemServiceImpl implements ItemService {
         if (userId == item.getOwner().getId()) {
             Booking lastBooking = bookingRepository.findLastBookingByItemId(itemDto.getId());
             Booking nextBooking = bookingRepository.findNextBookingByItemId(itemDto.getId());
-            if (lastBooking == null) {
-                itemDto.setLastBooking(null);
-            } else {
-                itemDto.setLastBooking(new BookingShortResponseDto(lastBooking.getId(), lastBooking.getBooker().getId()));
-            }
-            if (nextBooking == null) {
-                itemDto.setNextBooking(null);
-            } else {
-                itemDto.setNextBooking(new BookingShortResponseDto(nextBooking.getId(), nextBooking.getBooker().getId()));
-            }
+            itemDto.setLastBooking(lastBooking == null ? null :
+                    new BookingShortResponseDto(lastBooking.getId(), lastBooking.getBooker().getId()));
+            itemDto.setNextBooking(nextBooking == null ? null :
+                    new BookingShortResponseDto(nextBooking.getId(), nextBooking.getBooker().getId()));
         }
         itemDto.setComments(commentRepository.findCommentsByItem_Id(itemId)
                 .stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()));
@@ -104,12 +102,6 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemFullResponseDto> getAllItems(int ownerId, int from, int size) {
         if (!userRepository.existsById(ownerId)) {
             throw new NoSuchElementException("User id = " + ownerId + " doesn't exist.");
-        }
-        if (from < 0) {
-            throw new ValidationException("\"from\" should be positive or zero.");
-        }
-        if (size <= 0) {
-            throw new ValidationException("\"size\" should be positive.");
         }
 
         List<ItemFullResponseDto> items = itemRepository.findByOwner_IdOrderById(ownerId)
@@ -144,12 +136,6 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemResponseDto> getSearchedItems(String searchText, int from, int size) {
         if (searchText.isBlank()) {
             return Collections.emptyList();
-        }
-        if (from < 0) {
-            throw new ValidationException("\"from\" should be positive or zero.");
-        }
-        if (size <= 0) {
-            throw new ValidationException("\"size\" should be positive.");
         }
 
         return itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(searchText, searchText)

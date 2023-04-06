@@ -1,10 +1,10 @@
 package ru.practicum.shareit.item.mapper;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.shareit.item.dto.ItemFullResponseDto;
-import ru.practicum.shareit.item.dto.ItemResponseDto;
-import ru.practicum.shareit.item.dto.ItemRequestDto;
-import ru.practicum.shareit.item.dto.ItemShortResponseDto;
+import ru.practicum.shareit.item.dto.item.ItemFullResponseDto;
+import ru.practicum.shareit.item.dto.item.ItemResponseDto;
+import ru.practicum.shareit.item.dto.item.ItemRequestDto;
+import ru.practicum.shareit.item.dto.item.ItemShortResponseDto;
 import ru.practicum.shareit.item.model.Item;
 
 @UtilityClass
