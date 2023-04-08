@@ -57,17 +57,17 @@ public class ItemServiceTest {
     private static User testUser;
     private static ItemRequest testItemRequest;
 
-    private static ItemRequestDto[] testItemRequestDto;
-    private static Item[] testItem;
-    private static ItemResponseDto[] testItemResponseDto;
-    private static ItemFullResponseDto[] testItemFullResponseDto;
+    private static ItemRequestDto[] testItemRequestDtos;
+    private static Item[] testItems;
+    private static ItemResponseDto[] testItemResponseDtos;
+    private static ItemFullResponseDto[] testItemFullResponseDtos;
 
-    private static CommentRequestDto testCommentRequestDto;
-    private static Comment[] testComment;
-    private static CommentResponseDto[] testCommentResponseDto;
+    private static CommentRequestDto testCommentRequestDtos;
+    private static Comment[] testComments;
+    private static CommentResponseDto[] testCommentResponseDtos;
 
-    private static Booking[] testBooking;
-    private static BookingShortResponseDto[] testBookingShortResponseDto;
+    private static Booking[] testBookings;
+    private static BookingShortResponseDto[] testBookingShortResponseDtos;
 
 
     @BeforeAll
@@ -100,7 +100,7 @@ public class ItemServiceTest {
                 .thenReturn(Optional.empty());
         Exception exception = assertThrows(
                 NoSuchElementException.class,
-                () -> itemService.addItem(testItemRequestDto[0], 1)
+                () -> itemService.addItem(testItemRequestDtos[0], 1)
         );
         assertEquals(
                 exception.getMessage(),
@@ -113,7 +113,7 @@ public class ItemServiceTest {
                 .thenReturn(Optional.empty());
         exception = assertThrows(
                 NoSuchElementException.class,
-                () -> itemService.addItem(testItemRequestDto[0], 1)
+                () -> itemService.addItem(testItemRequestDtos[0], 1)
         );
         assertEquals(
                 exception.getMessage(),
@@ -123,8 +123,8 @@ public class ItemServiceTest {
         when(mockItemRequestRepository.findById(anyInt()))
                 .thenReturn(Optional.of(testItemRequest));
         when(mockItemRepository.save(any()))
-                .thenReturn(testItem[0]);
-        assertDoesNotThrow(() -> itemService.addItem(testItemRequestDto[0], 1));
+                .thenReturn(testItems[0]);
+        assertDoesNotThrow(() -> itemService.addItem(testItemRequestDtos[0], 1));
     }
 
     @Test
@@ -133,7 +133,7 @@ public class ItemServiceTest {
                 .thenReturn(Optional.empty());
         Exception exception = assertThrows(
                 NoSuchElementException.class,
-                () -> itemService.addComment(testCommentRequestDto, 1, 1)
+                () -> itemService.addComment(testCommentRequestDtos, 1, 1)
         );
         assertEquals(
                 exception.getMessage(),
@@ -146,7 +146,7 @@ public class ItemServiceTest {
                 .thenReturn(Optional.empty());
         exception = assertThrows(
                 NoSuchElementException.class,
-                () -> itemService.addComment(testCommentRequestDto, 1, 1)
+                () -> itemService.addComment(testCommentRequestDtos, 1, 1)
         );
         assertEquals(
                 exception.getMessage(),
@@ -154,10 +154,10 @@ public class ItemServiceTest {
         );
 
         when(mockItemRepository.findById(anyInt()))
-                .thenReturn(Optional.of(testItem[0]));
+                .thenReturn(Optional.of(testItems[0]));
         exception = assertThrows(
                 NoSuchElementException.class,
-                () -> itemService.addComment(testCommentRequestDto, 1, 1)
+                () -> itemService.addComment(testCommentRequestDtos, 1, 1)
         );
         assertEquals(
                 exception.getMessage(),
@@ -168,7 +168,7 @@ public class ItemServiceTest {
                 .thenReturn(null);
         exception = assertThrows(
                 ValidationException.class,
-                () -> itemService.addComment(testCommentRequestDto, 1, 2)
+                () -> itemService.addComment(testCommentRequestDtos, 1, 2)
         );
         assertEquals(
                 exception.getMessage(),
@@ -176,10 +176,10 @@ public class ItemServiceTest {
         );
 
         when(mockBookingRepository.findLastBookingByItemIdAndBookerId(anyInt(), anyInt()))
-                .thenReturn(testBooking[0]);
+                .thenReturn(testBookings[0]);
         when(mockCommentRepository.save(any()))
-                .thenReturn(testComment[0]);
-        assertDoesNotThrow(() -> itemService.addComment(testCommentRequestDto, 1, 2));
+                .thenReturn(testComments[0]);
+        assertDoesNotThrow(() -> itemService.addComment(testCommentRequestDtos, 1, 2));
     }
 
     @Test
@@ -196,13 +196,13 @@ public class ItemServiceTest {
         );
 
         when(mockItemRepository.findById(anyInt()))
-                .thenReturn(Optional.of(testItem[0]));
+                .thenReturn(Optional.of(testItems[0]));
         when(mockCommentRepository.findCommentsByItem_Id(anyInt()))
-                .thenReturn(List.of(testComment[0], testComment[1]));
-        testItemFullResponseDto[0].setComments(List.of(testCommentResponseDto[0], testCommentResponseDto[1]));
+                .thenReturn(List.of(testComments[0], testComments[1]));
+        testItemFullResponseDtos[0].setComments(List.of(testCommentResponseDtos[0], testCommentResponseDtos[1]));
         assertEquals(
                 itemService.getItem(1, 2),
-                testItemFullResponseDto[0]
+                testItemFullResponseDtos[0]
         );
 
         when(mockBookingRepository.findLastBookingByItemId(anyInt()))
@@ -211,21 +211,21 @@ public class ItemServiceTest {
                 .thenReturn(null);
         assertEquals(
                 itemService.getItem(1, 1),
-                testItemFullResponseDto[0]
+                testItemFullResponseDtos[0]
         );
 
         when(mockBookingRepository.findLastBookingByItemId(anyInt()))
-                .thenReturn(testBooking[0]);
+                .thenReturn(testBookings[0]);
         when(mockBookingRepository.findNextBookingByItemId(anyInt()))
-                .thenReturn(testBooking[1]);
-        testItemFullResponseDto[0].setLastBooking(testBookingShortResponseDto[0]);
-        testItemFullResponseDto[0].setNextBooking(testBookingShortResponseDto[1]);
+                .thenReturn(testBookings[1]);
+        testItemFullResponseDtos[0].setLastBooking(testBookingShortResponseDtos[0]);
+        testItemFullResponseDtos[0].setNextBooking(testBookingShortResponseDtos[1]);
         assertEquals(
                 itemService.getItem(1, 1),
-                testItemFullResponseDto[0]
+                testItemFullResponseDtos[0]
         );
-        testItemFullResponseDto[0].setLastBooking(null);
-        testItemFullResponseDto[0].setNextBooking(null);
+        testItemFullResponseDtos[0].setLastBooking(null);
+        testItemFullResponseDtos[0].setNextBooking(null);
     }
 
     @Test
@@ -244,41 +244,41 @@ public class ItemServiceTest {
         when(mockUserRepository.existsById(anyInt()))
                 .thenReturn(true);
         when(mockItemRepository.findByOwner_IdOrderById(anyInt()))
-                .thenReturn(List.of(testItem[0], testItem[1], testItem[2], testItem[3]));
-        testItemFullResponseDto[1].setComments(Collections.emptyList());
-        testItemFullResponseDto[2].setComments(Collections.emptyList());
+                .thenReturn(List.of(testItems[0], testItems[1], testItems[2], testItems[3]));
+        testItemFullResponseDtos[1].setComments(Collections.emptyList());
+        testItemFullResponseDtos[2].setComments(Collections.emptyList());
         assertEquals(
                 itemService.getAllItems(1, 1, 2),
-                List.of(testItemFullResponseDto[1], testItemFullResponseDto[2])
+                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2])
         );
 
         when(mockCommentRepository.findAll())
-                .thenReturn(List.of(testComment[0], testComment[1], testComment[2], testComment[3]));
-        testItemFullResponseDto[1].setComments(List.of(testCommentResponseDto[0], testCommentResponseDto[1]));
-        testItemFullResponseDto[2].setComments(List.of(testCommentResponseDto[2], testCommentResponseDto[3]));
+                .thenReturn(List.of(testComments[0], testComments[1], testComments[2], testComments[3]));
+        testItemFullResponseDtos[1].setComments(List.of(testCommentResponseDtos[0], testCommentResponseDtos[1]));
+        testItemFullResponseDtos[2].setComments(List.of(testCommentResponseDtos[2], testCommentResponseDtos[3]));
         assertEquals(
                 itemService.getAllItems(1, 1, 2),
-                List.of(testItemFullResponseDto[1], testItemFullResponseDto[2])
+                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2])
         );
 
         when(mockBookingRepository.findLastBookings())
-                .thenReturn(List.of(testBooking[0], testBooking[1]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         when(mockBookingRepository.findNextBookings())
-                .thenReturn(List.of(testBooking[0], testBooking[1]));
-        testItemFullResponseDto[1].setLastBooking(testBookingShortResponseDto[0]);
-        testItemFullResponseDto[1].setNextBooking(testBookingShortResponseDto[0]);
-        testItemFullResponseDto[2].setLastBooking(testBookingShortResponseDto[1]);
-        testItemFullResponseDto[2].setNextBooking(testBookingShortResponseDto[1]);
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
+        testItemFullResponseDtos[1].setLastBooking(testBookingShortResponseDtos[0]);
+        testItemFullResponseDtos[1].setNextBooking(testBookingShortResponseDtos[0]);
+        testItemFullResponseDtos[2].setLastBooking(testBookingShortResponseDtos[1]);
+        testItemFullResponseDtos[2].setNextBooking(testBookingShortResponseDtos[1]);
         assertEquals(
                 itemService.getAllItems(1, 1, 2),
-                List.of(testItemFullResponseDto[1], testItemFullResponseDto[2])
+                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2])
         );
-        testItemFullResponseDto[1].setComments(null);
-        testItemFullResponseDto[1].setLastBooking(null);
-        testItemFullResponseDto[1].setNextBooking(null);
-        testItemFullResponseDto[2].setComments(null);
-        testItemFullResponseDto[2].setLastBooking(null);
-        testItemFullResponseDto[2].setNextBooking(null);
+        testItemFullResponseDtos[1].setComments(null);
+        testItemFullResponseDtos[1].setLastBooking(null);
+        testItemFullResponseDtos[1].setNextBooking(null);
+        testItemFullResponseDtos[2].setComments(null);
+        testItemFullResponseDtos[2].setLastBooking(null);
+        testItemFullResponseDtos[2].setNextBooking(null);
     }
 
     @Test
@@ -289,10 +289,10 @@ public class ItemServiceTest {
         );
 
         when(mockItemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString()))
-                .thenReturn(List.of(testItem[0], testItem[1], testItem[2], testItem[3]));
+                .thenReturn(List.of(testItems[0], testItems[1], testItems[2], testItems[3]));
         assertEquals(
                 itemService.getSearchedItems("test", 1, 2),
-                List.of(testItemResponseDto[1], testItemResponseDto[2])
+                List.of(testItemResponseDtos[1], testItemResponseDtos[2])
         );
     }
 
@@ -302,7 +302,7 @@ public class ItemServiceTest {
                 .thenReturn(Optional.empty());
         Exception exception = assertThrows(
                 NoSuchElementException.class,
-                () -> itemService.updateItem(1, testItemRequestDto[0], 1)
+                () -> itemService.updateItem(1, testItemRequestDtos[0], 1)
         );
         assertEquals(
                 exception.getMessage(),
@@ -310,59 +310,54 @@ public class ItemServiceTest {
         );
 
         when(mockItemRepository.findById(anyInt()))
-                .thenReturn(Optional.of(testItem[0]));
+                .thenReturn(Optional.of(testItems[0]));
         when(mockUserRepository.findById(anyInt()))
                 .thenReturn(Optional.empty());
-        testItem[0].setOwner(null);
+        testItems[0].setOwner(null);
         exception = assertThrows(
                 NoSuchElementException.class,
-                () -> itemService.updateItem(1, testItemRequestDto[0], 1)
+                () -> itemService.updateItem(1, testItemRequestDtos[0], 1)
         );
         assertEquals(
                 exception.getMessage(),
                 "User id = 1 doesn't exist."
         );
+        testItems[0].setOwner(testUser);
 
-        when(mockUserRepository.findById(anyInt()))
-                .thenReturn(Optional.of(testUser));
-        testItemRequestDto[1].setName(null);
-        testItemRequestDto[1].setDescription(null);
-        testItemRequestDto[1].setAvailable(null);
-        assertEquals(
-                itemService.updateItem(1, testItemRequestDto[1], 1),
-                testItemResponseDto[0]
-        );
-
-        testItem[0].setOwner(null);
-        testItemRequestDto[1].setName("");
-        testItemRequestDto[1].setDescription("");
-        assertEquals(
-                itemService.updateItem(1, testItemRequestDto[1], 1),
-                testItemResponseDto[0]
-        );
-
-        testItem[0].setOwner(testUser);
         exception = assertThrows(
                 ForbiddenActionException.class,
-                () -> itemService.updateItem(1, testItemRequestDto[1], 2)
+                () -> itemService.updateItem(1, testItemRequestDtos[0], 2)
         );
         assertEquals(
                 exception.getMessage(),
                 "Changing owner is forbidden."
         );
 
-        testItemRequestDto[1].setName("ItemName2");
-        testItemRequestDto[1].setDescription("ItemDescription2");
-        testItemRequestDto[1].setAvailable(false);
-        testItemResponseDto[1].setId(1);
         assertEquals(
-                itemService.updateItem(1, testItemRequestDto[1], 1),
-                testItemResponseDto[1]
+                itemService.updateItem(
+                        1, new ItemRequestDto(null, null, null, 1), 1
+                ),
+                testItemResponseDtos[0]
         );
-        testItemResponseDto[1].setId(2);
-        testItem[0].setName("ItemName1");
-        testItem[0].setDescription("ItemDescription1");
-        testItem[0].setAvailable(true);
+        assertEquals(
+                itemService.updateItem(
+                        1, new ItemRequestDto("", "", null, 1), 1
+                ),
+                testItemResponseDtos[0]
+        );
+        assertEquals(
+                itemService.updateItem(
+                        1,
+                        new ItemRequestDto("newName", "newDescription", false, 1),
+                        1
+                ),
+                new ItemResponseDto(
+                        1, "newName", "newDescription", false, 1, null
+                )
+        );
+        testItems[0].setName("ItemName1");
+        testItems[0].setDescription("ItemDescription1");
+        testItems[0].setAvailable(true);
     }
 
     @Test
@@ -385,41 +380,41 @@ public class ItemServiceTest {
 
 
     private static void initTestItem() {
-        testItemRequestDto = new ItemRequestDto[2];
-        testItemRequestDto[0] = new ItemRequestDto(
+        testItemRequestDtos = new ItemRequestDto[2];
+        testItemRequestDtos[0] = new ItemRequestDto(
                 "ItemName1", "ItemDescription1", true, 1
         );
-        testItemRequestDto[1] = new ItemRequestDto(
-                "ItemName2", "ItemDescription2", false, 1
+        testItemRequestDtos[1] = new ItemRequestDto(
+                "ItemName2", "ItemDescription2", true, 1
         );
 
-        testItem = new Item[4];
-        testItem[0] = new Item(
+        testItems = new Item[4];
+        testItems[0] = new Item(
                 1, "ItemName1", "ItemDescription1", true, testUser, testItemRequest
         );
-        testItem[1] = new Item(
-                2, "ItemName2", "ItemDescription2", false, testUser, testItemRequest
+        testItems[1] = new Item(
+                2, "ItemName2", "ItemDescription2", true, testUser, testItemRequest
         );
-        testItem[2] = new Item(
+        testItems[2] = new Item(
                 3, "ItemName3", "ItemDescription3", true, testUser, testItemRequest
         );
-        testItem[3] = new Item(
+        testItems[3] = new Item(
                 4, "ItemName4", "ItemDescription4", true, testUser, testItemRequest
         );
 
-        testItemResponseDto = new ItemResponseDto[3];
-        testItemResponseDto[0] = new ItemResponseDto(
+        testItemResponseDtos = new ItemResponseDto[3];
+        testItemResponseDtos[0] = new ItemResponseDto(
                 1, "ItemName1", "ItemDescription1", true, 1, null
         );
-        testItemResponseDto[1] = new ItemResponseDto(
-                2, "ItemName2", "ItemDescription2", false, 1, null
+        testItemResponseDtos[1] = new ItemResponseDto(
+                2, "ItemName2", "ItemDescription2", true, 1, null
         );
-        testItemResponseDto[2] = new ItemResponseDto(
+        testItemResponseDtos[2] = new ItemResponseDto(
                 3, "ItemName3", "ItemDescription3", true, 1, null
         );
 
-        testItemFullResponseDto = new ItemFullResponseDto[3];
-        testItemFullResponseDto[0] = new ItemFullResponseDto(
+        testItemFullResponseDtos = new ItemFullResponseDto[3];
+        testItemFullResponseDtos[0] = new ItemFullResponseDto(
                 1,
                 "ItemName1",
                 "ItemDescription1",
@@ -429,17 +424,17 @@ public class ItemServiceTest {
                 null,
                 null
         );
-        testItemFullResponseDto[1] = new ItemFullResponseDto(
+        testItemFullResponseDtos[1] = new ItemFullResponseDto(
                 2,
                 "ItemName2",
                 "ItemDescription2",
-                false,
+                true,
                 1,
                 null,
                 null,
                 null
         );
-        testItemFullResponseDto[2] = new ItemFullResponseDto(
+        testItemFullResponseDtos[2] = new ItemFullResponseDto(
                 3,
                 "ItemName3",
                 "ItemDescription3",
@@ -452,40 +447,40 @@ public class ItemServiceTest {
     }
 
     private static void initTestComment() {
-        testCommentRequestDto = new CommentRequestDto("CommentText1");
+        testCommentRequestDtos = new CommentRequestDto("CommentText1");
 
-        testComment = new Comment[4];
-        testComment[0] = new Comment(1, "CommentText1", testItem[1], testUser, testLocalDateTime);
-        testComment[1] = new Comment(2, "CommentText2", testItem[1], testUser, testLocalDateTime);
-        testComment[2] = new Comment(3, "CommentText3", testItem[2], testUser, testLocalDateTime);
-        testComment[3] = new Comment(4, "CommentText4", testItem[2], testUser, testLocalDateTime);
+        testComments = new Comment[4];
+        testComments[0] = new Comment(1, "CommentText1", testItems[1], testUser, testLocalDateTime);
+        testComments[1] = new Comment(2, "CommentText2", testItems[1], testUser, testLocalDateTime);
+        testComments[2] = new Comment(3, "CommentText3", testItems[2], testUser, testLocalDateTime);
+        testComments[3] = new Comment(4, "CommentText4", testItems[2], testUser, testLocalDateTime);
 
-        testCommentResponseDto = new CommentResponseDto[4];
-        testCommentResponseDto[0] = new CommentResponseDto(
+        testCommentResponseDtos = new CommentResponseDto[4];
+        testCommentResponseDtos[0] = new CommentResponseDto(
                 1, "CommentText1", "UserName1", testLocalDateTime
         );
-        testCommentResponseDto[1] = new CommentResponseDto(
+        testCommentResponseDtos[1] = new CommentResponseDto(
                 2, "CommentText2", "UserName1", testLocalDateTime
         );
-        testCommentResponseDto[2] = new CommentResponseDto(
+        testCommentResponseDtos[2] = new CommentResponseDto(
                 3, "CommentText3", "UserName1", testLocalDateTime
         );
-        testCommentResponseDto[3] = new CommentResponseDto(
+        testCommentResponseDtos[3] = new CommentResponseDto(
                 4, "CommentText4", "UserName1", testLocalDateTime
         );
     }
 
     private static void initTestBooking() {
-        testBooking = new Booking[2];
-        testBooking[0] = new Booking(
-                1, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUser, testItem[1]
+        testBookings = new Booking[2];
+        testBookings[0] = new Booking(
+                1, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUser, testItems[1]
         );
-        testBooking[1] = new Booking(
-                2, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUser, testItem[2]
+        testBookings[1] = new Booking(
+                2, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUser, testItems[2]
         );
 
-        testBookingShortResponseDto = new BookingShortResponseDto[2];
-        testBookingShortResponseDto[0] = new BookingShortResponseDto(1, 1);
-        testBookingShortResponseDto[1] = new BookingShortResponseDto(2, 1);
+        testBookingShortResponseDtos = new BookingShortResponseDto[2];
+        testBookingShortResponseDtos[0] = new BookingShortResponseDto(1, 1);
+        testBookingShortResponseDtos[1] = new BookingShortResponseDto(2, 1);
     }
 }

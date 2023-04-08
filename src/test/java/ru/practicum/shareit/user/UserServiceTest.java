@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +28,22 @@ public class UserServiceTest {
     private UserRepository mockUserRepository;
     private UserService userService;
 
-    private UserRequestDto testUserRequestDto1 = new UserRequestDto("test1", "test1");
-    private User testUser1 = new User(1, "test1", "test1");
-    private User testUser2 = new User(2, "test2", "test2");
-    private UserResponseDto testUserResponseDto1 = new UserResponseDto(1, "test1", "test1");
-    private UserResponseDto testUserResponseDto2 = new UserResponseDto(2, "test2", "test2");
+    private static UserRequestDto testUserRequestDto;
+    private static User[] testUsers;
+    private static UserResponseDto[] testUserResponseDtos;
+
+    @BeforeAll
+    static void beforeAll() {
+        testUserRequestDto = new UserRequestDto("test1", "test1");
+
+        testUsers = new User[2];
+        testUsers[0] = new User(1, "test1", "test1");
+        testUsers[1] = new User(2, "test2", "test2");
+
+        testUserResponseDtos = new UserResponseDto[2];
+        testUserResponseDtos[0] = new UserResponseDto(1, "test1", "test1");
+        testUserResponseDtos[1] = new UserResponseDto(2, "test2", "test2");
+    }
 
     @BeforeEach
     void beforeEach() {
@@ -41,8 +53,8 @@ public class UserServiceTest {
     @Test
     void testAddUser() {
         when(mockUserRepository.save(any()))
-                .thenReturn(testUser1);
-        assertDoesNotThrow(() -> userService.addUser(testUserRequestDto1));
+                .thenReturn(testUsers[0]);
+        assertDoesNotThrow(() -> userService.addUser(testUserRequestDto));
     }
 
     @Test
@@ -59,17 +71,17 @@ public class UserServiceTest {
         );
 
         when(mockUserRepository.findById(anyInt()))
-                .thenReturn(Optional.of(testUser1));
+                .thenReturn(Optional.of(testUsers[0]));
         assertDoesNotThrow(() -> userService.getUser(1));
     }
 
     @Test
     void testGetAllUsers() {
         when(mockUserRepository.findAll())
-                .thenReturn(List.of(testUser1, testUser2));
+                .thenReturn(List.of(testUsers[0], testUsers[1]));
         assertEquals(
                 userService.getAllUsers(),
-                List.of(testUserResponseDto1, testUserResponseDto2)
+                List.of(testUserResponseDtos[0], testUserResponseDtos[1])
         );
     }
 
@@ -87,21 +99,21 @@ public class UserServiceTest {
         );
 
         when(mockUserRepository.findById(anyInt()))
-                .thenReturn(Optional.of(testUser1));
+                .thenReturn(Optional.of(testUsers[0]));
         assertEquals(
                 userService.updateUser(1, new UserRequestDto(null, null)),
-                new UserResponseDto(1, "test1", "test1")
+                testUserResponseDtos[0]
         );
         assertEquals(
                 userService.updateUser(1, new UserRequestDto("", "")),
-                new UserResponseDto(1, "test1", "test1")
+                testUserResponseDtos[0]
         );
         assertEquals(
                 userService.updateUser(1, new UserRequestDto("newTest", "newTest")),
                 new UserResponseDto(1, "newTest", "newTest")
         );
-        testUser1.setName("test1");
-        testUser1.setEmail("test1");
+        testUsers[0].setName("test1");
+        testUsers[0].setEmail("test1");
     }
 
     @Test
