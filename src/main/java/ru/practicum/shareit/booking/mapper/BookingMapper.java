@@ -22,12 +22,12 @@ public class BookingMapper {
         );
     }
 
-    public Booking toBooking(BookingRequestDto bookingDto, Item item, User booker) {
+    public Booking toBooking(BookingRequestDto bookingDto, User booker, Item item) {
         return new Booking(
                 bookingDto.getStart(),
                 bookingDto.getEnd(),
-                item,
-                booker
+                booker,
+                item
         );
     }
 }

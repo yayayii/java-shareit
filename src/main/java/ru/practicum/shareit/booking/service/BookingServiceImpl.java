@@ -7,10 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.model.RequestState;
-import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.dao.ItemRepository;
@@ -41,10 +41,10 @@ public class BookingServiceImpl implements BookingService {
         User booker = userRepository.findById(bookerId)
                 .orElseThrow(() -> new NoSuchElementException("User id = " + bookerId + " doesn't exist."));
 
-        Booking booking = BookingMapper.toBooking(bookingDto, item, booker);
+        Booking booking = BookingMapper.toBooking(bookingDto, booker, item);
         if (booking.getBooker().getId() == item.getOwner().getId()) {
             throw new NoSuchElementException("Booker id = " + booking.getBooker().getId() +
-                    " is the owner of the item id = " + item.getOwner().getId());
+                    " is the owner of the item id = " + item.getOwner().getId() + ".");
         }
         Booking intersectedBooking = bookingRepository
                 .findIntersectedBookingByItemId(booking.getItem().getId(), booking.getStart(), booking.getEnd());
@@ -93,7 +93,7 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.findBookingsByBooker_IdAndStatus(bookerId, BookingStatus.valueOf(String.valueOf(state)), Sort.by("start").descending())
                         .stream().skip(from).limit(size).map(BookingMapper::toBookingDto).collect(Collectors.toList());
             default:
-                throw new ValidationException("Unknown state: " + state);
+                throw new ValidationException("Unknown state: " + state + ".");
         }
     }
 
@@ -130,7 +130,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDto updateBooking(int bookingId, int ownerId, boolean isApproved) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NoSuchElementException("Booking with id = " + bookingId + " doesn't exist."));
+                .orElseThrow(() -> new NoSuchElementException("Booking id = " + bookingId + " doesn't exist."));
         if (booking.getItem().getOwner().getId() != ownerId) {
             throw new NoSuchElementException("User id = " + ownerId + " isn't an owner of the item.");
         }

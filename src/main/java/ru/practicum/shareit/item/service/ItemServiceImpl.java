@@ -8,6 +8,8 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.exception.ForbiddenActionException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.dao.CommentRepository;
+import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.comment.CommentRequestDto;
 import ru.practicum.shareit.item.dto.comment.CommentResponseDto;
 import ru.practicum.shareit.item.dto.item.ItemFullResponseDto;
@@ -17,8 +19,6 @@ import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.dao.CommentRepository;
-import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
@@ -180,11 +180,5 @@ public class ItemServiceImpl implements ItemService {
         }
 
         itemRepository.deleteById(itemId);
-    }
-
-    @Transactional
-    @Override
-    public void deleteAllItems() {
-        itemRepository.deleteAll();
     }
 }

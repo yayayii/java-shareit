@@ -12,7 +12,7 @@ public interface ItemService {
     //create
     ItemResponseDto addItem(ItemRequestDto itemDto, int ownerId);
 
-    CommentResponseDto addComment(CommentRequestDto commentDto, int itemId, int userId);
+    CommentResponseDto addComment(CommentRequestDto commentDto, int itemId, int bookerId);
 
     //read
     ItemFullResponseDto getItem(int itemId, int userId);
@@ -26,6 +26,4 @@ public interface ItemService {
 
     //delete
     void deleteItem(int itemId);
-
-    void deleteAllItems();
 }

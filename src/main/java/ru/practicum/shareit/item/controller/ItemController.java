@@ -81,9 +81,4 @@ public class ItemController {
     public void deleteItem(@PathVariable int itemId) {
         itemService.deleteItem(itemId);
     }
-
-    @DeleteMapping
-    public void deleteAllItems() {
-        itemService.deleteAllItems();
-    }
 }
