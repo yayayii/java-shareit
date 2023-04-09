@@ -36,7 +36,7 @@ public class BookingServiceImpl implements BookingService {
         Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(() -> new NoSuchElementException("Item id = " + bookingDto.getItemId() + " doesn't exist."));
         if (!item.getAvailable()) {
-            throw new ValidationException("Item id = " + bookingDto.getItemId() + " isn't available.");
+            throw new ValidationException("Item id = " + item.getId() + " isn't available.");
         }
         User booker = userRepository.findById(bookerId)
                 .orElseThrow(() -> new NoSuchElementException("User id = " + bookerId + " doesn't exist."));
