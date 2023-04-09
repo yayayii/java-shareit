@@ -79,8 +79,8 @@ public class BookingServiceTest {
                 () -> bookingService.addBooking(testBookingRequestDto, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Item id = 1 doesn't exist."
+                "Item id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockItemRepository.findById(anyInt()))
@@ -90,8 +90,8 @@ public class BookingServiceTest {
                 () -> bookingService.addBooking(testBookingRequestDto, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Item id = 1 isn't available."
+                "Item id = 1 isn't available.",
+                exception.getMessage()
         );
         testItems[0].setAvailable(true);
 
@@ -102,8 +102,8 @@ public class BookingServiceTest {
                 () -> bookingService.addBooking(testBookingRequestDto, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.findById(anyInt()))
@@ -113,8 +113,8 @@ public class BookingServiceTest {
                 () -> bookingService.addBooking(testBookingRequestDto, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Booker id = 1 is the owner of the item id = 1."
+                "Booker id = 1 is the owner of the item id = 1.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.findById(anyInt()))
@@ -126,9 +126,9 @@ public class BookingServiceTest {
                 () -> bookingService.addBooking(testBookingRequestDto, 1)
         );
         assertEquals(
-                exception.getMessage(),
                 "Booking time for this item is intersected with other's booking time for this item " +
-                        "(" + testLocalDateTime + " : " + testLocalDateTime + ")."
+                        "(" + testLocalDateTime + " : " + testLocalDateTime + ").",
+                exception.getMessage()
         );
 
         when(mockBookingRepository.findIntersectedBookingByItemId(anyInt(), any(), any()))
@@ -149,8 +149,8 @@ public class BookingServiceTest {
                 () -> bookingService.getBooking(1, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Booking id = 1 doesn't exist."
+                "Booking id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockBookingRepository.findById(anyInt()))
@@ -160,8 +160,8 @@ public class BookingServiceTest {
                 () -> bookingService.getBooking(1, 2)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 2 can't get this booking."
+                "User id = 2 can't get this booking.",
+                exception.getMessage()
         );
 
         assertDoesNotThrow(
@@ -178,8 +178,8 @@ public class BookingServiceTest {
                 () -> bookingService.getAllBookings(1, RequestState.ALL, 1, 2)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.existsById(anyInt()))
@@ -187,43 +187,43 @@ public class BookingServiceTest {
         when(mockBookingRepository.findBookingsByBooker_Id(anyInt(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookings(1, RequestState.ALL, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookings(1, RequestState.ALL, 1, 2)
         );
 
         when(mockBookingRepository.findPastBookingsByBooker_Id(anyInt(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookings(1, RequestState.PAST, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookings(1, RequestState.PAST, 1, 2)
         );
 
         when(mockBookingRepository.findFutureBookingsByBooker_Id(anyInt(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookings(1, RequestState.FUTURE, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookings(1, RequestState.FUTURE, 1, 2)
         );
 
         when(mockBookingRepository.findCurrentBookingsByBooker_Id(anyInt(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookings(1, RequestState.CURRENT, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookings(1, RequestState.CURRENT, 1, 2)
         );
 
         when(mockBookingRepository.findBookingsByBooker_IdAndStatus(anyInt(), any(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookings(1, RequestState.WAITING, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookings(1, RequestState.WAITING, 1, 2)
         );
 
         when(mockBookingRepository.findBookingsByBooker_IdAndStatus(anyInt(), any(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookings(1, RequestState.REJECTED, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookings(1, RequestState.REJECTED, 1, 2)
         );
     }
 
@@ -236,8 +236,8 @@ public class BookingServiceTest {
                 () -> bookingService.getAllBookingsFromOwner(1, RequestState.ALL, 1, 2)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.existsById(anyInt()))
@@ -245,43 +245,43 @@ public class BookingServiceTest {
         when(mockBookingRepository.findBookingsByItem_Owner_Id(anyInt(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookingsFromOwner(1, RequestState.ALL, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.ALL, 1, 2)
         );
 
         when(mockBookingRepository.findPastBookingsByItem_Owner_Id(anyInt(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookingsFromOwner(1, RequestState.PAST, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.PAST, 1, 2)
         );
 
         when(mockBookingRepository.findFutureBookingsByItem_Owner_Id(anyInt(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookingsFromOwner(1, RequestState.FUTURE, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.FUTURE, 1, 2)
         );
 
         when(mockBookingRepository.findCurrentBookingsByItem_Owner_Id(anyInt(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookingsFromOwner(1, RequestState.CURRENT, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.CURRENT, 1, 2)
         );
 
         when(mockBookingRepository.findBookingsByItem_Owner_IdAndStatus(anyInt(), any(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookingsFromOwner(1, RequestState.WAITING, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.WAITING, 1, 2)
         );
 
         when(mockBookingRepository.findBookingsByItem_Owner_IdAndStatus(anyInt(), any(), any()))
                 .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
         assertEquals(
-                bookingService.getAllBookingsFromOwner(1, RequestState.REJECTED, 1, 2),
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2])
+                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.REJECTED, 1, 2)
         );
     }
 
@@ -294,8 +294,8 @@ public class BookingServiceTest {
                 () -> bookingService.updateBooking(1, 1, true)
         );
         assertEquals(
-                exception.getMessage(),
-                "Booking id = 1 doesn't exist."
+                "Booking id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockBookingRepository.findById(anyInt()))
@@ -305,8 +305,8 @@ public class BookingServiceTest {
                 () -> bookingService.updateBooking(1, 2, true)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 2 isn't an owner of the item."
+                "User id = 2 isn't an owner of the item.",
+                exception.getMessage()
         );
 
         exception = assertThrows(
@@ -314,20 +314,33 @@ public class BookingServiceTest {
                 () -> bookingService.updateBooking(1, 1, true)
         );
         assertEquals(
-                exception.getMessage(),
-                "Changing status after approving is forbidden."
+                "Changing status after approving is forbidden.",
+                exception.getMessage()
         );
 
         testBookings[0].setStatus(BookingStatus.WAITING);
         assertEquals(
-                bookingService.updateBooking(1, 1, true),
-                new BookingResponseDto(1, testLocalDateTime, testLocalDateTime, BookingStatus.APPROVED, testUserShortResponseDtos[0], testItemShortResponseDtos[0])
+                new BookingResponseDto(
+                        1,
+                        testLocalDateTime,
+                        testLocalDateTime,
+                        BookingStatus.APPROVED,
+                        testUserShortResponseDtos[0],testItemShortResponseDtos[0]
+                ),
+                bookingService.updateBooking(1, 1, true)
         );
         testBookings[0].setStatus(BookingStatus.WAITING);
 
         assertEquals(
-                bookingService.updateBooking(1, 1, false),
-                new BookingResponseDto(1, testLocalDateTime, testLocalDateTime, BookingStatus.REJECTED, testUserShortResponseDtos[0], testItemShortResponseDtos[0])
+                new BookingResponseDto(
+                        1,
+                        testLocalDateTime,
+                        testLocalDateTime,
+                        BookingStatus.REJECTED,
+                        testUserShortResponseDtos[0],
+                        testItemShortResponseDtos[0]
+                ),
+                bookingService.updateBooking(1, 1, false)
         );
         testBookings[0].setStatus(BookingStatus.WAITING);
     }

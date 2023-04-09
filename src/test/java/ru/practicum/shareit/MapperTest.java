@@ -44,24 +44,33 @@ public class MapperTest {
 
     @BeforeAll
     static void beforeAll() {
-        initTest();
+        testLocalDateTime = LocalDateTime.of(2001, 1, 1, 1, 1);
+        testUser = new User(1, "test1", "test1");
+        testItemRequest = new ItemRequest(
+                1, "test1", testLocalDateTime, testUser, Collections.emptyList()
+        );
+        testItem = new Item(1, "test1", "test1", true, testUser, testItemRequest);
+        testComment = new Comment(1, "test1", testItem, testUser, testLocalDateTime);
+        testBooking = new Booking(
+                1, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUser, testItem
+        );
     }
 
     @Test
     void testUserMapper() {
         assertEquals(
-                UserMapper.toUserDto(testUser),
-                new UserResponseDto(1, "test1", "test1")
+                new UserResponseDto(1, "test1", "test1"),
+                UserMapper.toUserDto(testUser)
         );
 
         assertEquals(
-                UserMapper.toShortUserDto(testUser),
-                new UserShortResponseDto(1)
+                new UserShortResponseDto(1),
+                UserMapper.toShortUserDto(testUser)
         );
 
         assertEquals(
-                UserMapper.toUser(new UserRequestDto("test1", "test1")),
-                testUser
+                testUser,
+                UserMapper.toUser(new UserRequestDto("test1", "test1"))
         );
     }
 
@@ -69,43 +78,41 @@ public class MapperTest {
     void testItemMapper() {
         testItem.setRequest(testItemRequest);
         assertEquals(
-                ItemMapper.toFullItemDto(testItem),
-                new ItemFullResponseDto(1, "test1", "test1", true, 1)
+                new ItemFullResponseDto(1, "test1", "test1", true, 1),
+                ItemMapper.toFullItemDto(testItem)
         );
         testItem.setRequest(null);
         assertEquals(
-                ItemMapper.toFullItemDto(testItem),
-                new ItemFullResponseDto(1, "test1", "test1", true, null)
+                new ItemFullResponseDto(1, "test1", "test1", true, null),
+                ItemMapper.toFullItemDto(testItem)
         );
         testItem.setRequest(testItemRequest);
 
         assertEquals(
-                ItemMapper.toItemDto(testItem),
-                new ItemResponseDto(1, "test1", "test1", true, 1)
+                new ItemResponseDto(1, "test1", "test1", true, 1),
+                ItemMapper.toItemDto(testItem)
         );
         testItem.setRequest(null);
         assertEquals(
-                ItemMapper.toItemDto(testItem),
-                new ItemResponseDto(1, "test1", "test1", true, null)
+                new ItemResponseDto(1, "test1", "test1", true, null),
+                ItemMapper.toItemDto(testItem)
         );
         testItem.setRequest(testItemRequest);
 
         assertEquals(
-                ItemMapper.toShortItemDto(testItem),
-                new ItemShortResponseDto(1, "test1")
+                new ItemShortResponseDto(1, "test1"),
+                ItemMapper.toShortItemDto(testItem)
         );
 
-        System.out.println(ItemMapper.toItem(new ItemRequestDto("test1", "test1", true, null)).equals(testItem));
         assertEquals(
-                ItemMapper.toItem(new ItemRequestDto("test1", "test1", true, null)),
-                testItem
+                testItem,
+                ItemMapper.toItem(new ItemRequestDto("test1", "test1", true, null))
         );
     }
 
     @Test
     void testBookingMapper() {
         assertEquals(
-                BookingMapper.toBookingDto(testBooking),
                 new BookingResponseDto(
                         1,
                         testLocalDateTime,
@@ -113,14 +120,15 @@ public class MapperTest {
                         BookingStatus.WAITING,
                         UserMapper.toShortUserDto(testUser),
                         ItemMapper.toShortItemDto(testItem)
-                )
+                ),
+                BookingMapper.toBookingDto(testBooking)
         );
 
         assertEquals(
+                new Booking(testLocalDateTime, testLocalDateTime, testUser, testItem),
                 BookingMapper.toBooking(
                         new BookingRequestDto(1, testLocalDateTime, testLocalDateTime), testUser, testItem
-                ),
-                new Booking(testLocalDateTime, testLocalDateTime, testUser, testItem)
+                )
         );
     }
 
@@ -128,77 +136,37 @@ public class MapperTest {
     void testItemRequestMapper() {
         testItemRequest.setItems(List.of(testItem, testItem));
         assertEquals(
-                ItemRequestMapper.toFullItemRequestDto(testItemRequest),
                 new ItemRequestFullResponseDto(
                         1,
                         "test1",
                         testLocalDateTime,
                         List.of(ItemMapper.toItemDto(testItem), ItemMapper.toItemDto(testItem))
-                )
+                ),
+                ItemRequestMapper.toFullItemRequestDto(testItemRequest)
         );
         testItemRequest.setItems(Collections.emptyList());
 
         assertEquals(
-                ItemRequestMapper.toItemRequestDto(testItemRequest),
-                new ItemRequestResponseDto(1, "test1", testLocalDateTime)
+                new ItemRequestResponseDto(1, "test1", testLocalDateTime),
+                ItemRequestMapper.toItemRequestDto(testItemRequest)
         );
 
         assertEquals(
-                ItemRequestMapper.toItemRequest(new ItemRequestRequestDto("test1")),
-                testItemRequest
+                testItemRequest,
+                ItemRequestMapper.toItemRequest(new ItemRequestRequestDto("test1"))
         );
     }
 
     @Test
     void testCommentMapper() {
         assertEquals(
-                CommentMapper.toCommentDto(testComment),
-                new CommentResponseDto(1, "test1", "test1", testLocalDateTime)
+                new CommentResponseDto(1, "test1", "test1", testLocalDateTime),
+                CommentMapper.toCommentDto(testComment)
         );
 
         assertEquals(
-                CommentMapper.toComment(new CommentRequestDto("test1")),
-                testComment
-        );
-    }
-
-    private static void initTest() {
-        testLocalDateTime = LocalDateTime.of(2001, 1, 1, 1, 1);
-
-        testUser = new User(1, "test1", "test1");
-
-        testItemRequest = new ItemRequest(
-                1,
-                "test1",
-                testLocalDateTime,
-                testUser,
-                Collections.emptyList()
-        );
-
-        testItem = new Item(
-                1,
-                "test1",
-                "test1",
-                true,
-                testUser,
-                testItemRequest
-        );
-
-        testComment = new Comment(
-                1,
-                "test1",
-                testItem,
-                testUser,
-                testLocalDateTime
-        );
-
-        testBooking = new Booking(
-                1,
-                testLocalDateTime,
-                testLocalDateTime,
-                BookingStatus.WAITING,
-                testUser,
-                testItem
+                testComment,
+                CommentMapper.toComment(new CommentRequestDto("test1"))
         );
     }
 }

@@ -103,8 +103,8 @@ public class ItemServiceTest {
                 () -> itemService.addItem(testItemRequestDtos[0], 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.findById(anyInt()))
@@ -116,8 +116,8 @@ public class ItemServiceTest {
                 () -> itemService.addItem(testItemRequestDtos[0], 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Item Request id = 1 doesn't exist."
+                "Item Request id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockItemRequestRepository.findById(anyInt()))
@@ -136,8 +136,8 @@ public class ItemServiceTest {
                 () -> itemService.addComment(testCommentRequestDtos, 1, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.findById(anyInt()))
@@ -149,8 +149,8 @@ public class ItemServiceTest {
                 () -> itemService.addComment(testCommentRequestDtos, 1, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Item id = 1 doesn't exist."
+                "Item id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockItemRepository.findById(anyInt()))
@@ -160,8 +160,8 @@ public class ItemServiceTest {
                 () -> itemService.addComment(testCommentRequestDtos, 1, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Owner of the item can't leave comments on his own items."
+                "Owner of the item can't leave comments on his own items.",
+                exception.getMessage()
         );
 
         when(mockBookingRepository.findLastBookingByItemIdAndBookerId(anyInt(), anyInt()))
@@ -171,8 +171,8 @@ public class ItemServiceTest {
                 () -> itemService.addComment(testCommentRequestDtos, 1, 2)
         );
         assertEquals(
-                exception.getMessage(),
-                "You must have this item in the past in order to leave a comment."
+                "You must have this item in the past in order to leave a comment.",
+                exception.getMessage()
         );
 
         when(mockBookingRepository.findLastBookingByItemIdAndBookerId(anyInt(), anyInt()))
@@ -191,8 +191,8 @@ public class ItemServiceTest {
                 () -> itemService.getItem(1, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Item id = 1 doesn't exist."
+                "Item id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockItemRepository.findById(anyInt()))
@@ -201,8 +201,8 @@ public class ItemServiceTest {
                 .thenReturn(List.of(testComments[0], testComments[1]));
         testItemFullResponseDtos[0].setComments(List.of(testCommentResponseDtos[0], testCommentResponseDtos[1]));
         assertEquals(
-                itemService.getItem(1, 2),
-                testItemFullResponseDtos[0]
+                testItemFullResponseDtos[0],
+                itemService.getItem(1, 2)
         );
 
         when(mockBookingRepository.findLastBookingByItemId(anyInt()))
@@ -210,8 +210,8 @@ public class ItemServiceTest {
         when(mockBookingRepository.findLastBookingByItemId(anyInt()))
                 .thenReturn(null);
         assertEquals(
-                itemService.getItem(1, 1),
-                testItemFullResponseDtos[0]
+                testItemFullResponseDtos[0],
+                itemService.getItem(1, 1)
         );
 
         when(mockBookingRepository.findLastBookingByItemId(anyInt()))
@@ -221,8 +221,8 @@ public class ItemServiceTest {
         testItemFullResponseDtos[0].setLastBooking(testBookingShortResponseDtos[0]);
         testItemFullResponseDtos[0].setNextBooking(testBookingShortResponseDtos[1]);
         assertEquals(
-                itemService.getItem(1, 1),
-                testItemFullResponseDtos[0]
+                testItemFullResponseDtos[0],
+                itemService.getItem(1, 1)
         );
         testItemFullResponseDtos[0].setLastBooking(null);
         testItemFullResponseDtos[0].setNextBooking(null);
@@ -237,8 +237,8 @@ public class ItemServiceTest {
                 () -> itemService.getAllItems(1, 1, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.existsById(anyInt()))
@@ -248,8 +248,8 @@ public class ItemServiceTest {
         testItemFullResponseDtos[1].setComments(Collections.emptyList());
         testItemFullResponseDtos[2].setComments(Collections.emptyList());
         assertEquals(
-                itemService.getAllItems(1, 1, 2),
-                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2])
+                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2]),
+                itemService.getAllItems(1, 1, 2)
         );
 
         when(mockCommentRepository.findAll())
@@ -257,8 +257,8 @@ public class ItemServiceTest {
         testItemFullResponseDtos[1].setComments(List.of(testCommentResponseDtos[0], testCommentResponseDtos[1]));
         testItemFullResponseDtos[2].setComments(List.of(testCommentResponseDtos[2], testCommentResponseDtos[3]));
         assertEquals(
-                itemService.getAllItems(1, 1, 2),
-                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2])
+                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2]),
+                itemService.getAllItems(1, 1, 2)
         );
 
         when(mockBookingRepository.findLastBookings())
@@ -270,8 +270,8 @@ public class ItemServiceTest {
         testItemFullResponseDtos[2].setLastBooking(testBookingShortResponseDtos[1]);
         testItemFullResponseDtos[2].setNextBooking(testBookingShortResponseDtos[1]);
         assertEquals(
-                itemService.getAllItems(1, 1, 2),
-                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2])
+                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2]),
+                itemService.getAllItems(1, 1, 2)
         );
         testItemFullResponseDtos[1].setComments(null);
         testItemFullResponseDtos[1].setLastBooking(null);
@@ -291,8 +291,8 @@ public class ItemServiceTest {
         when(mockItemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString()))
                 .thenReturn(List.of(testItems[0], testItems[1], testItems[2], testItems[3]));
         assertEquals(
-                itemService.getSearchedItems("test", 1, 2),
-                List.of(testItemResponseDtos[1], testItemResponseDtos[2])
+                List.of(testItemResponseDtos[1], testItemResponseDtos[2]),
+                itemService.getSearchedItems("test", 1, 2)
         );
     }
 
@@ -305,8 +305,8 @@ public class ItemServiceTest {
                 () -> itemService.updateItem(1, testItemRequestDtos[0], 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Item id = 1 doesn't exist."
+                "Item id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockItemRepository.findById(anyInt()))
@@ -319,8 +319,8 @@ public class ItemServiceTest {
                 () -> itemService.updateItem(1, testItemRequestDtos[0], 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
         testItems[0].setOwner(testUser);
 
@@ -329,30 +329,30 @@ public class ItemServiceTest {
                 () -> itemService.updateItem(1, testItemRequestDtos[0], 2)
         );
         assertEquals(
-                exception.getMessage(),
-                "Changing owner is forbidden."
+                "Changing owner is forbidden.",
+                exception.getMessage()
         );
 
         assertEquals(
+                testItemResponseDtos[0],
                 itemService.updateItem(
                         1, new ItemRequestDto(null, null, null, 1), 1
-                ),
-                testItemResponseDtos[0]
+                )
         );
         assertEquals(
+                testItemResponseDtos[0],
                 itemService.updateItem(
                         1, new ItemRequestDto("", "", null, 1), 1
-                ),
-                testItemResponseDtos[0]
+                )
         );
         assertEquals(
+                new ItemResponseDto(
+                        1, "newName", "newDescription", false, 1, null
+                ),
                 itemService.updateItem(
                         1,
                         new ItemRequestDto("newName", "newDescription", false, 1),
                         1
-                ),
-                new ItemResponseDto(
-                        1, "newName", "newDescription", false, 1, null
                 )
         );
         testItems[0].setName("ItemName1");
@@ -369,8 +369,8 @@ public class ItemServiceTest {
                 () -> itemService.deleteItem(1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Item id = 1 doesn't exist."
+                "Item id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockItemRepository.existsById(anyInt()))

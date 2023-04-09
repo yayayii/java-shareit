@@ -34,15 +34,15 @@ public class UserServiceTest {
 
     @BeforeAll
     static void beforeAll() {
-        testUserRequestDto = new UserRequestDto("test1", "test1");
+        testUserRequestDto = new UserRequestDto("UserName1", "UserEmail1");
 
         testUsers = new User[2];
-        testUsers[0] = new User(1, "test1", "test1");
-        testUsers[1] = new User(2, "test2", "test2");
+        testUsers[0] = new User(1, "UserName1", "UserEmail1");
+        testUsers[1] = new User(2, "UserName2", "UserEmail2");
 
         testUserResponseDtos = new UserResponseDto[2];
-        testUserResponseDtos[0] = new UserResponseDto(1, "test1", "test1");
-        testUserResponseDtos[1] = new UserResponseDto(2, "test2", "test2");
+        testUserResponseDtos[0] = new UserResponseDto(1, "UserName1", "UserEmail1");
+        testUserResponseDtos[1] = new UserResponseDto(2, "UserName2", "UserEmail2");
     }
 
     @BeforeEach
@@ -66,8 +66,8 @@ public class UserServiceTest {
                 () -> userService.getUser(1)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.findById(anyInt()))
@@ -80,8 +80,8 @@ public class UserServiceTest {
         when(mockUserRepository.findAll())
                 .thenReturn(List.of(testUsers[0], testUsers[1]));
         assertEquals(
-                userService.getAllUsers(),
-                List.of(testUserResponseDtos[0], testUserResponseDtos[1])
+                List.of(testUserResponseDtos[0], testUserResponseDtos[1]),
+                userService.getAllUsers()
         );
     }
 
@@ -94,23 +94,23 @@ public class UserServiceTest {
                 () -> userService.updateUser(1, null)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.findById(anyInt()))
                 .thenReturn(Optional.of(testUsers[0]));
         assertEquals(
-                userService.updateUser(1, new UserRequestDto(null, null)),
-                testUserResponseDtos[0]
+                testUserResponseDtos[0],
+                userService.updateUser(1, new UserRequestDto(null, null))
         );
         assertEquals(
-                userService.updateUser(1, new UserRequestDto("", "")),
-                testUserResponseDtos[0]
+                testUserResponseDtos[0],
+                userService.updateUser(1, new UserRequestDto("", ""))
         );
         assertEquals(
-                userService.updateUser(1, new UserRequestDto("newTest", "newTest")),
-                new UserResponseDto(1, "newTest", "newTest")
+                new UserResponseDto(1, "newTest", "newTest"),
+                userService.updateUser(1, new UserRequestDto("newTest", "newTest"))
         );
         testUsers[0].setName("test1");
         testUsers[0].setEmail("test1");
@@ -125,8 +125,8 @@ public class UserServiceTest {
                 () -> userService.deleteUser(1)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.existsById(anyInt()))

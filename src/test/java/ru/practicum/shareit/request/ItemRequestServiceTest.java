@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ItemRequestTest {
+public class ItemRequestServiceTest {
     @Mock
     private ItemRequestRepository mockItemRequestRepository;
     @Mock
@@ -65,8 +65,8 @@ public class ItemRequestTest {
                 () -> itemRequestService.addItemRequest(testItemRequestRequestDto, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.findById(anyInt()))
@@ -85,8 +85,8 @@ public class ItemRequestTest {
                 () -> itemRequestService.getItemRequest(1, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.existsById(anyInt()))
@@ -98,8 +98,8 @@ public class ItemRequestTest {
                 () -> itemRequestService.getItemRequest(1, 1)
         );
         assertEquals(
-                exception.getMessage(),
-                "Item Request id = 1 doesn't exist."
+                "Item Request id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockItemRequestRepository.findById(anyInt()))
@@ -116,8 +116,8 @@ public class ItemRequestTest {
                 () -> itemRequestService.getOtherItemRequests(1, 1, 2)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.existsById(anyInt()))
@@ -127,8 +127,8 @@ public class ItemRequestTest {
                         testItemRequests[0], testItemRequests[1], testItemRequests[2], testItemRequests[3]
                 ));
         assertEquals(
-                itemRequestService.getOtherItemRequests(1, 1, 2),
-                List.of(testItemRequestFullResponseDtos[1], testItemRequestFullResponseDtos[2])
+                List.of(testItemRequestFullResponseDtos[1], testItemRequestFullResponseDtos[2]),
+                itemRequestService.getOtherItemRequests(1, 1, 2)
         );
     }
 
@@ -141,8 +141,8 @@ public class ItemRequestTest {
                 () -> itemRequestService.getOwnItemRequests(1)
         );
         assertEquals(
-                exception.getMessage(),
-                "User id = 1 doesn't exist."
+                "User id = 1 doesn't exist.",
+                exception.getMessage()
         );
 
         when(mockUserRepository.existsById(anyInt()))
@@ -150,8 +150,8 @@ public class ItemRequestTest {
         when(mockItemRequestRepository.findAllByRequester_Id(anyInt(), any()))
                 .thenReturn(List.of(testItemRequests[0], testItemRequests[1]));
         assertEquals(
-                itemRequestService.getOwnItemRequests(1),
-                List.of(testItemRequestFullResponseDtos[0], testItemRequestFullResponseDtos[1])
+                List.of(testItemRequestFullResponseDtos[0], testItemRequestFullResponseDtos[1]),
+                itemRequestService.getOwnItemRequests(1)
         );
     }
 
