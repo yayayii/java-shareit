@@ -6,6 +6,7 @@ import ru.practicum.shareit.item.model.Comment;
 
 import java.util.List;
 
+
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findCommentsByItem_Id(int itemId);

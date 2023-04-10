@@ -34,6 +34,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
 public class MapperTest {
     private static LocalDateTime testLocalDateTime;
     private static User testUser;
@@ -41,6 +42,7 @@ public class MapperTest {
     private static Item testItem;
     private static Comment testComment;
     private static Booking testBooking;
+
 
     @BeforeAll
     static void beforeAll() {
@@ -55,6 +57,7 @@ public class MapperTest {
                 1, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUser, testItem
         );
     }
+
 
     @Test
     void testUserMapper() {

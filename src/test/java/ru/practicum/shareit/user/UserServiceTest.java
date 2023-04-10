@@ -22,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
     @Mock
@@ -31,6 +32,7 @@ public class UserServiceTest {
     private static UserRequestDto testUserRequestDto;
     private static User[] testUsers;
     private static UserResponseDto[] testUserResponseDtos;
+
 
     @BeforeAll
     static void beforeAll() {
@@ -44,6 +46,7 @@ public class UserServiceTest {
         testUserResponseDtos[0] = new UserResponseDto(1, "UserName1", "UserEmail1");
         testUserResponseDtos[1] = new UserResponseDto(2, "UserName2", "UserEmail2");
     }
+
 
     @BeforeEach
     void beforeEach() {

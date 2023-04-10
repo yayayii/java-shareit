@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @Transactional
 @Rollback(false)
 @AllArgsConstructor(onConstructor_ = @Autowired)
@@ -40,6 +41,7 @@ public class IntegrationTest {
     private final ItemService itemService;
     private final BookingService bookingService;
     private final ItemRequestService itemRequestService;
+
 
     private static LocalDateTime testLocalDateTime;
     private static UserRequestDto testUserRequestDto[];

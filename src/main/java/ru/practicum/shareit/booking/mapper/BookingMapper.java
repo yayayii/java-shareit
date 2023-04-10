@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
+
 @UtilityClass
 public class BookingMapper {
     public BookingResponseDto toBookingDto(Booking booking) {
