@@ -62,9 +62,6 @@ public class UserEndpointsTest {
 
     @Test
     void testAddUser() throws Exception {
-        when(mockUserService.addUser(any()))
-                .thenReturn(testUserResponseDtos[0]);
-
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(
                                 new UserRequestDto(null, "User@Email1.com")
@@ -81,6 +78,8 @@ public class UserEndpointsTest {
                         )).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
+        when(mockUserService.addUser(any()))
+                .thenReturn(testUserResponseDtos[0]);
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(testUserRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -94,7 +93,6 @@ public class UserEndpointsTest {
     void testGetUser() throws Exception {
         when(mockUserService.getUser(anyInt()))
                 .thenReturn(testUserResponseDtos[0]);
-
         mockMvc.perform(get("/users/1")
                         .content(objectMapper.writeValueAsString(testUserRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -108,7 +106,6 @@ public class UserEndpointsTest {
     void testGetAllUsers() throws Exception {
         when(mockUserService.getAllUsers())
                 .thenReturn(List.of(testUserResponseDtos[0], testUserResponseDtos[1]));
-
         mockMvc.perform(get("/users")
                         .content(objectMapper.writeValueAsString(testUserRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -124,15 +121,14 @@ public class UserEndpointsTest {
 
     @Test
     void testUpdateUser() throws Exception {
-        when(mockUserService.updateUser(anyInt(), any()))
-                .thenReturn(testUserResponseDtos[0]);
-
         mockMvc.perform(patch("/users/1")
                         .content(objectMapper.writeValueAsString(
                                 new UserRequestDto("UserName1", "UserEmail1.com")
                         )).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
+        when(mockUserService.updateUser(anyInt(), any()))
+                .thenReturn(testUserResponseDtos[0]);
         mockMvc.perform(patch("/users/1")
                         .content(objectMapper.writeValueAsString(testUserRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -145,7 +141,6 @@ public class UserEndpointsTest {
     @Test
     void testDeleteUser() throws Exception {
         doNothing().when(mockUserService).deleteUser(anyInt());
-
         mockMvc.perform(delete("/users/1"))
                 .andExpect(status().isOk());
     }
