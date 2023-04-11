@@ -38,4 +38,9 @@ public class ItemRequest {
         ItemRequest that = (ItemRequest) o;
         return Objects.equals(description, that.description);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(description, created, requester, items);
+    }
 }

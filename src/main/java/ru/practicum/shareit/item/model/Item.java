@@ -40,4 +40,9 @@ public class Item {
         Item item = (Item) o;
         return Objects.equals(name, item.name) && Objects.equals(description, item.description) && Objects.equals(available, item.available);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, available, owner, request);
+    }
 }

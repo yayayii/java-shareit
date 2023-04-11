@@ -36,4 +36,9 @@ public class Comment {
         Comment comment = (Comment) o;
         return Objects.equals(text, comment.text);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text, item, author, created);
+    }
 }

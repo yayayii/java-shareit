@@ -47,4 +47,9 @@ public class Booking {
         Booking booking = (Booking) o;
         return Objects.equals(start, booking.start) && Objects.equals(end, booking.end) && Objects.equals(booker, booking.booker) && Objects.equals(item, booking.item);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end, status, booker, item);
+    }
 }
