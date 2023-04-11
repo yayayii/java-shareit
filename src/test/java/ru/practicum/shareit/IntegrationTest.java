@@ -45,7 +45,7 @@ public class IntegrationTest {
 
 
     private static LocalDateTime testLocalDateTime;
-    private static UserRequestDto testUserRequestDto[];
+    private static UserRequestDto[] testUserRequestDto;
     private static ItemRequestDto testItemRequestDto;
     private static BookingRequestDto testBookingRequestDto;
     private static ItemRequestRequestDto testItemRequestRequestDto;
