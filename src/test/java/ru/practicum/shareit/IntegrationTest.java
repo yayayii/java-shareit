@@ -34,7 +34,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @Rollback(false)
 @AllArgsConstructor(onConstructor_ = @Autowired)
-@SpringBootTest(properties = "spring.datasource.url=jdbc:postgresql://localhost:5432/test")
+//@SpringBootTest(properties = "spring.datasource.url=jdbc:postgresql://localhost:5432/test")
+@SpringBootTest(properties = "spring.datasource.url=jdbc:h2:mem:test")
 public class IntegrationTest {
     private final EntityManager entityManager;
     private final UserService userService;

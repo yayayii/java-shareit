@@ -138,16 +138,6 @@ public class BookingEndpointsTest {
 
     @Test
     void testGetAllBookings() throws Exception {
-//        mockMvc.perform(get("/bookings?state=1")
-//                        .header("X-Sharer-User-Id", 1))
-//                .andExpect(status().isBadRequest());
-//        mockMvc.perform(get("/bookings?from=-1")
-//                        .header("X-Sharer-User-Id", 1))
-//                .andExpect(status().isBadRequest());
-//        mockMvc.perform(get("/bookings?size=0")
-//                        .header("X-Sharer-User-Id", 1))
-//                .andExpect(status().isBadRequest());
-
         when(mockBookingService.getAllBookings(anyInt(), any(), anyInt(), anyInt()))
                 .thenReturn(List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]));
         mockMvc.perform(get("/bookings")
@@ -175,16 +165,6 @@ public class BookingEndpointsTest {
 
     @Test
     void testGetAllBookingsFromOwner() throws Exception {
-//        mockMvc.perform(get("/bookings/owner?state=1")
-//                        .header("X-Sharer-User-Id", 1))
-//                .andExpect(status().isBadRequest());
-//        mockMvc.perform(get("/bookings/owner?from=-1")
-//                        .header("X-Sharer-User-Id", 1))
-//                .andExpect(status().isBadRequest());
-//        mockMvc.perform(get("/bookings/owner?size=0")
-//                        .header("X-Sharer-User-Id", 1))
-//                .andExpect(status().isBadRequest());
-
         when(mockBookingService.getAllBookingsFromOwner(anyInt(), any(), anyInt(), anyInt()))
                 .thenReturn(List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]));
         mockMvc.perform(get("/bookings/owner")

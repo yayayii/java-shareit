@@ -151,13 +151,6 @@ public class ItemEndpointsTest {
 
     @Test
     void testGetAllItems() throws Exception {
-//        mockMvc.perform(get("/items?from=-1")
-//                        .header("X-Sharer-User-Id", 1))
-//                .andExpect(status().isBadRequest());
-//        mockMvc.perform(get("/items?size=0")
-//                        .header("X-Sharer-User-Id", 1))
-//                .andExpect(status().isBadRequest());
-
         when(mockItemService.getAllItems(anyInt(), anyInt(), anyInt()))
                 .thenReturn(List.of(testItemFullResponseDtos[0], testItemFullResponseDtos[1]));
         mockMvc.perform(get("/items")
@@ -191,11 +184,6 @@ public class ItemEndpointsTest {
 
     @Test
     void testGetSearchedItems() throws Exception {
-//        mockMvc.perform(get("/items/search?text=test&from=-1")
-//                .andExpect(status().isBadRequest());
-//        mockMvc.perform(get("/items/search?text=test&size=0")
-//                .andExpect(status().isBadRequest());
-
         when(mockItemService.getSearchedItems(anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(testItemResponseDtos[1], testItemResponseDtos[2]));
         mockMvc.perform(get("/items/search?text=test"))

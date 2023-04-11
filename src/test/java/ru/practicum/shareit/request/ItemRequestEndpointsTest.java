@@ -209,13 +209,6 @@ public class ItemRequestEndpointsTest {
 
     @Test
     void testGetOtherItemRequest() throws Exception {
-//        mockMvc.perform(get("/requests/all?from=-1")
-//                        .header("X-Sharer-User-Id", 1))
-//                .andExpect(status().isBadRequest());
-//        mockMvc.perform(get("/requests/all?size=0")
-//                        .header("X-Sharer-User-Id", 1))
-//                .andExpect(status().isBadRequest());
-
         when(mockItemRequestService.getOtherItemRequests(anyInt(), anyInt(), anyInt()))
                 .thenReturn(List.of(testItemRequestFullResponseDtos[0], testItemRequestFullResponseDtos[1]));
         mockMvc.perform(get("/requests/all")

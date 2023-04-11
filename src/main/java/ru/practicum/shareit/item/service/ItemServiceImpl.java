@@ -134,7 +134,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemResponseDto> getSearchedItems(String searchText, int from, int size) {
-        //ПРОВЕРИТЬ ЧЕ БУДЕТ ПРИ ПУСТОМ ПАРАМЕТРЕ СТРОКИ (ВОЗМОЖЕН NULL)
         if (searchText.isBlank()) {
             return Collections.emptyList();
         }
