@@ -105,7 +105,7 @@ public class ItemServiceImpl implements ItemService {
             throw new NoSuchElementException("User id = " + ownerId + " doesn't exist.");
         }
 
-        List<ItemFullResponseDto> items = itemRepository.findByOwner_IdOrderById(ownerId, PageRequest.of(from/size, size))
+        List<ItemFullResponseDto> items = itemRepository.findByOwner_IdOrderById(ownerId, PageRequest.of(from / size, size))
                 .stream().map(ItemMapper::toFullItemDto).collect(Collectors.toList());
         Map<Integer, Booking> lastBookings = bookingRepository.findLastBookings().stream()
                 .collect(Collectors.toMap((booking) -> booking.getItem().getId(), Function.identity(), (o, o1) -> o));

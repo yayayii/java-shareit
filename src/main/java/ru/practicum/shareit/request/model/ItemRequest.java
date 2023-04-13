@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
-@Entity @Table(name = "request")
+@Entity
+@Table(name = "request")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
