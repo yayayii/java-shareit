@@ -83,14 +83,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     Booking findLastBookingByItemId(int itemId);
 
     @Query(
-            "select b from Booking b " +
-            "where b.start <= current_timestamp " +
-            "and b.status = 'APPROVED' " +
-            "order by b.end desc"
-    )
-    List<Booking> findLastBookings();
-
-    @Query(
         value = "select * from booking b " +
                 "where item_id = ?1 " +
                 "and start_date > current_timestamp " +
@@ -100,14 +92,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
         nativeQuery = true
     )
     Booking findNextBookingByItemId(int itemId);
-
-    @Query(
-            "select b from Booking b " +
-            "where b.start > current_timestamp " +
-            "and b.status = 'APPROVED' " +
-            "order by b.start"
-    )
-    List<Booking> findNextBookings();
 
     @Query(
         value = "select * from booking b " +

@@ -253,8 +253,10 @@ public class ItemServiceTest {
                 itemService.getAllItems(1, 0, 1)
         );
 
-        when(mockCommentRepository.findAll())
-                .thenReturn(List.of(testComments[0], testComments[1], testComments[2], testComments[3]));
+        when(mockCommentRepository.findCommentsByItem_Id(1))
+                .thenReturn(List.of(testComments[0], testComments[1]));
+        when(mockCommentRepository.findCommentsByItem_Id(2))
+                .thenReturn(List.of(testComments[2], testComments[3]));
         testItemFullResponseDtos[0].setComments(List.of(testCommentResponseDtos[0], testCommentResponseDtos[1]));
         testItemFullResponseDtos[1].setComments(List.of(testCommentResponseDtos[2], testCommentResponseDtos[3]));
         assertEquals(
@@ -262,10 +264,14 @@ public class ItemServiceTest {
                 itemService.getAllItems(1, 0, 1)
         );
 
-        when(mockBookingRepository.findLastBookings())
-                .thenReturn(List.of(testBookings[0], testBookings[1]));
-        when(mockBookingRepository.findNextBookings())
-                .thenReturn(List.of(testBookings[0], testBookings[1]));
+        when(mockBookingRepository.findLastBookingByItemId(1))
+                .thenReturn(testBookings[0]);
+        when(mockBookingRepository.findNextBookingByItemId(1))
+                .thenReturn(testBookings[0]);
+        when(mockBookingRepository.findLastBookingByItemId(2))
+                .thenReturn(testBookings[1]);
+        when(mockBookingRepository.findNextBookingByItemId(2))
+                .thenReturn(testBookings[1]);
         testItemFullResponseDtos[0].setLastBooking(testBookingShortResponseDtos[0]);
         testItemFullResponseDtos[0].setNextBooking(testBookingShortResponseDtos[0]);
         testItemFullResponseDtos[1].setLastBooking(testBookingShortResponseDtos[1]);
