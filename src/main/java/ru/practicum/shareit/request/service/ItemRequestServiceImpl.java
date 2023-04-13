@@ -55,7 +55,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             throw new NoSuchElementException("User id = " + userId + " doesn't exist.");
         }
 
-        return itemRequestRepository.findAllByRequester_IdNot(userId, PageRequest.of(from/size, size, Sort.by("created").descending()))
+        return itemRequestRepository.findAllByRequester_IdNot(userId, PageRequest.of(from / size, size, Sort.by("created").descending()))
                 .stream().map(ItemRequestMapper::toFullItemRequestDto).collect(Collectors.toList());
     }
 

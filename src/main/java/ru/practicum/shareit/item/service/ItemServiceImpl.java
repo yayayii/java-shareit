@@ -139,7 +139,7 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
 
-        return itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(searchText, searchText, PageRequest.of(from/size, size))
+        return itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(searchText, searchText, PageRequest.of(from / size, size))
                 .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
