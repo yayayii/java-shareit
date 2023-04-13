@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingShortResponseDto;
@@ -104,8 +105,8 @@ public class ItemServiceImpl implements ItemService {
             throw new NoSuchElementException("User id = " + ownerId + " doesn't exist.");
         }
 
-        List<ItemFullResponseDto> items = itemRepository.findByOwner_IdOrderById(ownerId)
-                .stream().skip(from).limit(size).map(ItemMapper::toFullItemDto).collect(Collectors.toList());
+        List<ItemFullResponseDto> items = itemRepository.findByOwner_IdOrderById(ownerId, PageRequest.of(from/size, size))
+                .stream().map(ItemMapper::toFullItemDto).collect(Collectors.toList());
         Map<Integer, Booking> lastBookings = bookingRepository.findLastBookings().stream()
                 .collect(Collectors.toMap((booking) -> booking.getItem().getId(), Function.identity(), (o, o1) -> o));
         Map<Integer, Booking> nextBookings = bookingRepository.findNextBookings().stream()
@@ -138,8 +139,8 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
 
-        return itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(searchText, searchText)
-                .stream().skip(from).limit(size).map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(searchText, searchText, PageRequest.of(from/size, size))
+                .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     //update

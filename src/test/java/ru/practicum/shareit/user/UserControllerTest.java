@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @ExtendWith(MockitoExtension.class)
-public class UserEndpointsTest {
+public class UserControllerTest {
     @Mock
     private UserService mockUserService;
     @InjectMocks

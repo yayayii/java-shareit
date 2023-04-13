@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.dao;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
-    List<Booking> findBookingsByBooker_Id(int bookerId, Sort sort);
+    List<Booking> findBookingsByBooker_Id(int bookerId, Pageable pageable);
 
     @Query(
             "select b  from Booking b " +
@@ -21,7 +22,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where u.id = ?1 " +
             "and current_timestamp between b.start and b.end"
     )
-    List<Booking> findCurrentBookingsByBooker_Id(int bookerId, Sort sort);
+    List<Booking> findCurrentBookingsByBooker_Id(int bookerId, Pageable pageable);
 
     @Query(
             "select b  from Booking b " +
@@ -29,7 +30,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where u.id = ?1 " +
             "and b.end < current_timestamp"
     )
-    List<Booking> findPastBookingsByBooker_Id(int bookerId, Sort sort);
+    List<Booking> findPastBookingsByBooker_Id(int bookerId, Pageable pageable);
 
     @Query(
             "select b  from Booking b " +
@@ -37,12 +38,12 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where u.id = ?1 " +
             "and b.start > current_timestamp"
     )
-    List<Booking> findFutureBookingsByBooker_Id(int bookerId, Sort sort);
+    List<Booking> findFutureBookingsByBooker_Id(int bookerId, Pageable pageable);
 
-    List<Booking> findBookingsByBooker_IdAndStatus(int bookerId, BookingStatus status, Sort sort);
+    List<Booking> findBookingsByBooker_IdAndStatus(int bookerId, BookingStatus status, Pageable pageable);
 
 
-    List<Booking> findBookingsByItem_Owner_Id(int ownerId, Sort sort);
+    List<Booking> findBookingsByItem_Owner_Id(int ownerId, Pageable pageable);
 
     @Query(
             "select b  from Booking b " +
@@ -50,7 +51,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where i.owner.id = ?1 " +
             "and current_timestamp between b.start and b.end"
     )
-    List<Booking> findCurrentBookingsByItem_Owner_Id(int ownerId, Sort sort);
+    List<Booking> findCurrentBookingsByItem_Owner_Id(int ownerId, Pageable pageable);
 
     @Query(
             "select b  from Booking b " +
@@ -58,7 +59,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where i.owner.id = ?1 " +
             "and b.end < current_timestamp"
     )
-    List<Booking> findPastBookingsByItem_Owner_Id(int ownerId, Sort sort);
+    List<Booking> findPastBookingsByItem_Owner_Id(int ownerId, Pageable pageable);
 
     @Query(
             "select b  from Booking b " +
@@ -66,16 +67,16 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where i.owner.id = ?1 " +
             "and b.start > current_timestamp"
     )
-    List<Booking> findFutureBookingsByItem_Owner_Id(int ownerId, Sort sort);
+    List<Booking> findFutureBookingsByItem_Owner_Id(int ownerId, Pageable pageable);
 
-    List<Booking> findBookingsByItem_Owner_IdAndStatus(int ownerId, BookingStatus status, Sort sort);
+    List<Booking> findBookingsByItem_Owner_IdAndStatus(int ownerId, BookingStatus status, Pageable pageable);
 
 
     @Query(
         value = "select * from booking b " +
                 "where item_id = ?1 " +
                 "and start_date <= current_timestamp " +
-                "and status like 'APPROVED' " +
+                "and status = 'APPROVED' " +
                 "order by end_date desc " +
                 "limit 1",
         nativeQuery = true
@@ -94,7 +95,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
         value = "select * from booking b " +
                 "where item_id = ?1 " +
                 "and start_date > current_timestamp " +
-                "and status like 'APPROVED' " +
+                "and status = 'APPROVED' " +
                 "order by start_date " +
                 "limit 1",
         nativeQuery = true
@@ -114,7 +115,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                 "where item_id = ?1 " +
                 "and booker_id = ?2 " +
                 "and end_date < current_timestamp " +
-                "and status like 'APPROVED' " +
+                "and status = 'APPROVED' " +
                 "order by end_date desc " +
                 "limit 1",
         nativeQuery = true

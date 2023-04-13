@@ -108,7 +108,7 @@ public class MapperTest {
         );
 
         assertEquals(
-                testItem,
+                new Item(1, "test1", "test1", true, null, null),
                 ItemMapper.toItem(new ItemRequestDto("test1", "test1", true, null))
         );
     }
@@ -155,7 +155,7 @@ public class MapperTest {
         );
 
         assertEquals(
-                testItemRequest,
+                new ItemRequest(1, "test1", null, null, null),
                 ItemRequestMapper.toItemRequest(new ItemRequestRequestDto("test1"))
         );
     }
@@ -168,7 +168,7 @@ public class MapperTest {
         );
 
         assertEquals(
-                testComment,
+                new Comment(1, "test1", null, null, null),
                 CommentMapper.toComment(new CommentRequestDto("test1"))
         );
     }

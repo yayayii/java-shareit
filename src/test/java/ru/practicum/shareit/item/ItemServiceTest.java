@@ -235,7 +235,7 @@ public class ItemServiceTest {
                 .thenReturn(false);
         Exception exception = assertThrows(
                 NoSuchElementException.class,
-                () -> itemService.getAllItems(1, 1, 1)
+                () -> itemService.getAllItems(1, 0, 1)
         );
         assertEquals(
                 "User id = 1 doesn't exist.",
@@ -244,42 +244,42 @@ public class ItemServiceTest {
 
         when(mockUserRepository.existsById(anyInt()))
                 .thenReturn(true);
-        when(mockItemRepository.findByOwner_IdOrderById(anyInt()))
-                .thenReturn(List.of(testItems[0], testItems[1], testItems[2], testItems[3]));
+        when(mockItemRepository.findByOwner_IdOrderById(anyInt(), any()))
+                .thenReturn(List.of(testItems[0], testItems[1]));
+        testItemFullResponseDtos[0].setComments(Collections.emptyList());
         testItemFullResponseDtos[1].setComments(Collections.emptyList());
-        testItemFullResponseDtos[2].setComments(Collections.emptyList());
         assertEquals(
-                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2]),
-                itemService.getAllItems(1, 1, 2)
+                List.of(testItemFullResponseDtos[0], testItemFullResponseDtos[1]),
+                itemService.getAllItems(1, 0, 1)
         );
 
         when(mockCommentRepository.findAll())
                 .thenReturn(List.of(testComments[0], testComments[1], testComments[2], testComments[3]));
-        testItemFullResponseDtos[1].setComments(List.of(testCommentResponseDtos[0], testCommentResponseDtos[1]));
-        testItemFullResponseDtos[2].setComments(List.of(testCommentResponseDtos[2], testCommentResponseDtos[3]));
+        testItemFullResponseDtos[0].setComments(List.of(testCommentResponseDtos[0], testCommentResponseDtos[1]));
+        testItemFullResponseDtos[1].setComments(List.of(testCommentResponseDtos[2], testCommentResponseDtos[3]));
         assertEquals(
-                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2]),
-                itemService.getAllItems(1, 1, 2)
+                List.of(testItemFullResponseDtos[0], testItemFullResponseDtos[1]),
+                itemService.getAllItems(1, 0, 1)
         );
 
         when(mockBookingRepository.findLastBookings())
                 .thenReturn(List.of(testBookings[0], testBookings[1]));
         when(mockBookingRepository.findNextBookings())
                 .thenReturn(List.of(testBookings[0], testBookings[1]));
-        testItemFullResponseDtos[1].setLastBooking(testBookingShortResponseDtos[0]);
-        testItemFullResponseDtos[1].setNextBooking(testBookingShortResponseDtos[0]);
-        testItemFullResponseDtos[2].setLastBooking(testBookingShortResponseDtos[1]);
-        testItemFullResponseDtos[2].setNextBooking(testBookingShortResponseDtos[1]);
+        testItemFullResponseDtos[0].setLastBooking(testBookingShortResponseDtos[0]);
+        testItemFullResponseDtos[0].setNextBooking(testBookingShortResponseDtos[0]);
+        testItemFullResponseDtos[1].setLastBooking(testBookingShortResponseDtos[1]);
+        testItemFullResponseDtos[1].setNextBooking(testBookingShortResponseDtos[1]);
         assertEquals(
-                List.of(testItemFullResponseDtos[1], testItemFullResponseDtos[2]),
-                itemService.getAllItems(1, 1, 2)
+                List.of(testItemFullResponseDtos[0], testItemFullResponseDtos[1]),
+                itemService.getAllItems(1, 0, 1)
         );
+        testItemFullResponseDtos[0].setComments(null);
+        testItemFullResponseDtos[0].setLastBooking(null);
+        testItemFullResponseDtos[0].setNextBooking(null);
         testItemFullResponseDtos[1].setComments(null);
         testItemFullResponseDtos[1].setLastBooking(null);
         testItemFullResponseDtos[1].setNextBooking(null);
-        testItemFullResponseDtos[2].setComments(null);
-        testItemFullResponseDtos[2].setLastBooking(null);
-        testItemFullResponseDtos[2].setNextBooking(null);
     }
 
     @Test
@@ -289,11 +289,11 @@ public class ItemServiceTest {
                 Collections.emptyList()
         );
 
-        when(mockItemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString()))
-                .thenReturn(List.of(testItems[0], testItems[1], testItems[2], testItems[3]));
+        when(mockItemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString(), any()))
+                .thenReturn(List.of(testItems[0], testItems[1]));
         assertEquals(
-                List.of(testItemResponseDtos[1], testItemResponseDtos[2]),
-                itemService.getSearchedItems("test", 1, 2)
+                List.of(testItemResponseDtos[0], testItemResponseDtos[1]),
+                itemService.getSearchedItems("test", 0, 1)
         );
     }
 
@@ -389,32 +389,23 @@ public class ItemServiceTest {
                 "ItemName2", "ItemDescription2", true, 1
         );
 
-        testItems = new Item[4];
+        testItems = new Item[2];
         testItems[0] = new Item(
                 1, "ItemName1", "ItemDescription1", true, testUser, testItemRequest
         );
         testItems[1] = new Item(
                 2, "ItemName2", "ItemDescription2", true, testUser, testItemRequest
         );
-        testItems[2] = new Item(
-                3, "ItemName3", "ItemDescription3", true, testUser, testItemRequest
-        );
-        testItems[3] = new Item(
-                4, "ItemName4", "ItemDescription4", true, testUser, testItemRequest
-        );
 
-        testItemResponseDtos = new ItemResponseDto[3];
+        testItemResponseDtos = new ItemResponseDto[2];
         testItemResponseDtos[0] = new ItemResponseDto(
                 1, "ItemName1", "ItemDescription1", true, 1, null
         );
         testItemResponseDtos[1] = new ItemResponseDto(
                 2, "ItemName2", "ItemDescription2", true, 1, null
         );
-        testItemResponseDtos[2] = new ItemResponseDto(
-                3, "ItemName3", "ItemDescription3", true, 1, null
-        );
 
-        testItemFullResponseDtos = new ItemFullResponseDto[3];
+        testItemFullResponseDtos = new ItemFullResponseDto[2];
         testItemFullResponseDtos[0] = new ItemFullResponseDto(
                 1,
                 "ItemName1",
@@ -435,26 +426,16 @@ public class ItemServiceTest {
                 null,
                 null
         );
-        testItemFullResponseDtos[2] = new ItemFullResponseDto(
-                3,
-                "ItemName3",
-                "ItemDescription3",
-                true,
-                1,
-                null,
-                null,
-                null
-        );
     }
 
     private static void initTestComment() {
         testCommentRequestDtos = new CommentRequestDto("CommentText1");
 
         testComments = new Comment[4];
-        testComments[0] = new Comment(1, "CommentText1", testItems[1], testUser, testLocalDateTime);
-        testComments[1] = new Comment(2, "CommentText2", testItems[1], testUser, testLocalDateTime);
-        testComments[2] = new Comment(3, "CommentText3", testItems[2], testUser, testLocalDateTime);
-        testComments[3] = new Comment(4, "CommentText4", testItems[2], testUser, testLocalDateTime);
+        testComments[0] = new Comment(1, "CommentText1", testItems[0], testUser, testLocalDateTime);
+        testComments[1] = new Comment(2, "CommentText2", testItems[0], testUser, testLocalDateTime);
+        testComments[2] = new Comment(3, "CommentText3", testItems[1], testUser, testLocalDateTime);
+        testComments[3] = new Comment(4, "CommentText4", testItems[1], testUser, testLocalDateTime);
 
         testCommentResponseDtos = new CommentResponseDto[4];
         testCommentResponseDtos[0] = new CommentResponseDto(
@@ -474,10 +455,10 @@ public class ItemServiceTest {
     private static void initTestBooking() {
         testBookings = new Booking[2];
         testBookings[0] = new Booking(
-                1, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUser, testItems[1]
+                1, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUser, testItems[0]
         );
         testBookings[1] = new Booking(
-                2, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUser, testItems[2]
+                2, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUser, testItems[1]
         );
 
         testBookingShortResponseDtos = new BookingShortResponseDto[2];

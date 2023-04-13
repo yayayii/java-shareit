@@ -125,11 +125,11 @@ public class ItemRequestServiceTest {
                 .thenReturn(true);
         when(mockItemRequestRepository.findAllByRequester_IdNot(anyInt(), any()))
                 .thenReturn(List.of(
-                        testItemRequests[0], testItemRequests[1], testItemRequests[2], testItemRequests[3]
+                        testItemRequests[0], testItemRequests[1]
                 ));
         assertEquals(
-                List.of(testItemRequestFullResponseDtos[1], testItemRequestFullResponseDtos[2]),
-                itemRequestService.getOtherItemRequests(1, 1, 2)
+                List.of(testItemRequestFullResponseDtos[0], testItemRequestFullResponseDtos[1]),
+                itemRequestService.getOtherItemRequests(1, 0, 1)
         );
     }
 
@@ -160,29 +160,20 @@ public class ItemRequestServiceTest {
     private static void initTestItemRequest() {
         testItemRequestRequestDto = new ItemRequestRequestDto("ItemRequestDescription1");
 
-        testItemRequests = new ItemRequest[4];
+        testItemRequests = new ItemRequest[2];
         testItemRequests[0] = new ItemRequest(
                 1, "ItemRequestDescription1", testLocalDateTime, testUser, Collections.emptyList()
         );
         testItemRequests[1] = new ItemRequest(
                 2, "ItemRequestDescription2", testLocalDateTime, testUser, Collections.emptyList()
         );
-        testItemRequests[2] = new ItemRequest(
-                3, "ItemRequestDescription3", testLocalDateTime, testUser, Collections.emptyList()
-        );
-        testItemRequests[3] = new ItemRequest(
-                4, "ItemRequestDescription4", testLocalDateTime, testUser, Collections.emptyList()
-        );
 
-        testItemRequestFullResponseDtos = new ItemRequestFullResponseDto[3];
+        testItemRequestFullResponseDtos = new ItemRequestFullResponseDto[2];
         testItemRequestFullResponseDtos[0] = new ItemRequestFullResponseDto(
                 1, "ItemRequestDescription1", testLocalDateTime, Collections.emptyList()
         );
         testItemRequestFullResponseDtos[1] = new ItemRequestFullResponseDto(
                 2, "ItemRequestDescription2", testLocalDateTime, Collections.emptyList()
-        );
-        testItemRequestFullResponseDtos[2] = new ItemRequestFullResponseDto(
-                3, "ItemRequestDescription3", testLocalDateTime, Collections.emptyList()
         );
     }
 }

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,8 +55,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             throw new NoSuchElementException("User id = " + userId + " doesn't exist.");
         }
 
-        return itemRequestRepository.findAllByRequester_IdNot(userId, Sort.by("created").descending())
-                .stream().skip(from).limit(size).map(ItemRequestMapper::toFullItemRequestDto).collect(Collectors.toList());
+        return itemRequestRepository.findAllByRequester_IdNot(userId, PageRequest.of(from/size, size, Sort.by("created").descending()))
+                .stream().map(ItemRequestMapper::toFullItemRequestDto).collect(Collectors.toList());
     }
 
     @Override

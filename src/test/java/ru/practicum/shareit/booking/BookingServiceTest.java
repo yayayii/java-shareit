@@ -186,45 +186,45 @@ public class BookingServiceTest {
         when(mockUserRepository.existsById(anyInt()))
                 .thenReturn(true);
         when(mockBookingRepository.findBookingsByBooker_Id(anyInt(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookings(1, RequestState.ALL, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookings(1, RequestState.ALL, 0, 1)
         );
 
         when(mockBookingRepository.findPastBookingsByBooker_Id(anyInt(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookings(1, RequestState.PAST, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookings(1, RequestState.PAST, 0, 1)
         );
 
         when(mockBookingRepository.findFutureBookingsByBooker_Id(anyInt(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookings(1, RequestState.FUTURE, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookings(1, RequestState.FUTURE, 0, 1)
         );
 
         when(mockBookingRepository.findCurrentBookingsByBooker_Id(anyInt(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookings(1, RequestState.CURRENT, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookings(1, RequestState.CURRENT, 0, 1)
         );
 
         when(mockBookingRepository.findBookingsByBooker_IdAndStatus(anyInt(), any(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookings(1, RequestState.WAITING, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookings(1, RequestState.WAITING, 0, 1)
         );
 
         when(mockBookingRepository.findBookingsByBooker_IdAndStatus(anyInt(), any(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookings(1, RequestState.REJECTED, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookings(1, RequestState.REJECTED, 0, 1)
         );
     }
 
@@ -244,45 +244,45 @@ public class BookingServiceTest {
         when(mockUserRepository.existsById(anyInt()))
                 .thenReturn(true);
         when(mockBookingRepository.findBookingsByItem_Owner_Id(anyInt(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookingsFromOwner(1, RequestState.ALL, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.ALL, 0, 1)
         );
 
         when(mockBookingRepository.findPastBookingsByItem_Owner_Id(anyInt(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookingsFromOwner(1, RequestState.PAST, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.PAST, 0, 1)
         );
 
         when(mockBookingRepository.findFutureBookingsByItem_Owner_Id(anyInt(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookingsFromOwner(1, RequestState.FUTURE, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.FUTURE, 0, 1)
         );
 
         when(mockBookingRepository.findCurrentBookingsByItem_Owner_Id(anyInt(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookingsFromOwner(1, RequestState.CURRENT, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.CURRENT, 0, 1)
         );
 
         when(mockBookingRepository.findBookingsByItem_Owner_IdAndStatus(anyInt(), any(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookingsFromOwner(1, RequestState.WAITING, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.WAITING, 0, 1)
         );
 
         when(mockBookingRepository.findBookingsByItem_Owner_IdAndStatus(anyInt(), any(), any()))
-                .thenReturn(List.of(testBookings[0], testBookings[1], testBookings[2], testBookings[3]));
+                .thenReturn(List.of(testBookings[0], testBookings[1]));
         assertEquals(
-                List.of(testBookingResponseDtos[1], testBookingResponseDtos[2]),
-                bookingService.getAllBookingsFromOwner(1, RequestState.REJECTED, 1, 2)
+                List.of(testBookingResponseDtos[0], testBookingResponseDtos[1]),
+                bookingService.getAllBookingsFromOwner(1, RequestState.REJECTED, 0, 1)
         );
     }
 
@@ -310,6 +310,7 @@ public class BookingServiceTest {
                 exception.getMessage()
         );
 
+        testBookings[0].setStatus(BookingStatus.APPROVED);
         exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> bookingService.updateBooking(1, 1, true)
@@ -362,7 +363,7 @@ public class BookingServiceTest {
         testItemShortResponseDtos[0] = new ItemShortResponseDto(1, "ItemName1");
         testItemShortResponseDtos[1] = new ItemShortResponseDto(2, "ItemName2");
 
-        testItems = new Item[3];
+        testItems = new Item[2];
         testItems[0] = new Item(
                 1, "ItemName1", "ItemDescription1", false, testUsers[0], null
         );
@@ -374,29 +375,20 @@ public class BookingServiceTest {
     private static void initTestBooking() {
         testBookingRequestDto = new BookingRequestDto(1, testLocalDateTime, testLocalDateTime);
 
-        testBookings = new Booking[4];
+        testBookings = new Booking[2];
         testBookings[0] = new Booking(
-                1, testLocalDateTime, testLocalDateTime, BookingStatus.APPROVED, testUsers[0], testItems[0]
+                1, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUsers[0], testItems[0]
         );
         testBookings[1] = new Booking(
                 2, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUsers[1], testItems[1]
         );
-        testBookings[2] = new Booking(
-                3, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUsers[0], testItems[0]
-        );
-        testBookings[3] = new Booking(
-                4, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUsers[0], testItems[0]
-        );
 
-        testBookingResponseDtos = new BookingResponseDto[3];
+        testBookingResponseDtos = new BookingResponseDto[2];
         testBookingResponseDtos[0] = new BookingResponseDto(
                 1, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUserShortResponseDtos[0], testItemShortResponseDtos[0]
         );
         testBookingResponseDtos[1] = new BookingResponseDto(
                 2, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUserShortResponseDtos[1], testItemShortResponseDtos[1]
-        );
-        testBookingResponseDtos[2] = new BookingResponseDto(
-                3, testLocalDateTime, testLocalDateTime, BookingStatus.WAITING, testUserShortResponseDtos[0], testItemShortResponseDtos[0]
         );
     }
 }

@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @ExtendWith(MockitoExtension.class)
-public class BookingEndpointsTest {
+public class BookingControllerTest {
     @Mock
     private BookingService mockBookingService;
     @InjectMocks
