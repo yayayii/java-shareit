@@ -6,14 +6,15 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
+
 @Entity
 @Table
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Item {
     @Id
+    @EqualsAndHashCode.Exclude
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
@@ -23,6 +24,7 @@ public class Item {
     @ManyToOne
     private User owner;
     @ManyToOne
+    @JoinColumn(name = "request_id")
     private ItemRequest request;
 
     public Item(String name, String description, Boolean available) {

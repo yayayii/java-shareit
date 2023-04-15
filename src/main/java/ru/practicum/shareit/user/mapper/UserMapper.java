@@ -6,6 +6,7 @@ import ru.practicum.shareit.user.dto.UserResponseDto;
 import ru.practicum.shareit.user.dto.UserShortResponseDto;
 import ru.practicum.shareit.user.model.User;
 
+
 @UtilityClass
 public class UserMapper {
     public UserResponseDto toUserDto(User user) {

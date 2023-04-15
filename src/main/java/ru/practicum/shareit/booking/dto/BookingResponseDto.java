@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.item.dto.ItemShortResponseDto;
+import ru.practicum.shareit.item.dto.item.ItemShortResponseDto;
 import ru.practicum.shareit.user.dto.UserShortResponseDto;
 
 import java.time.LocalDateTime;
+
 
 @Data
 @AllArgsConstructor

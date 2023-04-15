@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
@@ -8,9 +9,12 @@ import ru.practicum.shareit.booking.model.RequestState;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
-import java.util.Collection;
+import javax.validation.constraints.Min;
+import java.util.List;
+
 
 @AllArgsConstructor
+@Validated
 @RestController
 @RequestMapping(path = "/bookings")
 public class BookingController {
@@ -18,7 +22,7 @@ public class BookingController {
 
     //create
     @PostMapping
-    BookingResponseDto addBooking(
+    public BookingResponseDto addBooking(
             @Valid @RequestBody BookingRequestDto bookingDto,
             @RequestHeader("X-Sharer-User-Id") int bookerId
     ) {
@@ -27,7 +31,7 @@ public class BookingController {
 
     //read
     @GetMapping("/{bookingId}")
-    BookingResponseDto getBooking(
+    public BookingResponseDto getBooking(
             @PathVariable int bookingId,
             @RequestHeader("X-Sharer-User-Id") int userId
     ) {
@@ -35,24 +39,28 @@ public class BookingController {
     }
 
     @GetMapping
-    Collection<BookingResponseDto> getAllBookings(
-            @RequestHeader("X-Sharer-User-Id") int userId,
-            @RequestParam(name = "state", defaultValue = "ALL") RequestState state
+    public List<BookingResponseDto> getAllBookings(
+            @RequestHeader("X-Sharer-User-Id") int bookerId,
+            @RequestParam(name = "state", defaultValue = "ALL") RequestState state,
+            @RequestParam(defaultValue = "0") @Min(0) int from,
+            @RequestParam(defaultValue = "999") @Min(1) int size
     ) {
-        return bookingService.getAllBookings(userId, state);
+        return bookingService.getAllBookings(bookerId, state, from, size);
     }
 
     @GetMapping("/owner")
-    Collection<BookingResponseDto> getAllBookingsFromOwner(
-            @RequestHeader("X-Sharer-User-Id") int userId,
-            @RequestParam(name = "state", defaultValue = "ALL") RequestState state
+    public List<BookingResponseDto> getAllBookingsFromOwner(
+            @RequestHeader("X-Sharer-User-Id") int ownerId,
+            @RequestParam(name = "state", defaultValue = "ALL") RequestState state,
+            @RequestParam(defaultValue = "0") @Min(0) int from,
+            @RequestParam(defaultValue = "999") @Min(1) int size
     ) {
-        return bookingService.getAllBookingsFromOwner(userId, state);
+        return bookingService.getAllBookingsFromOwner(ownerId, state, from, size);
     }
 
     //update
     @PatchMapping("/{bookingId}")
-    BookingResponseDto updateBooking(
+    public BookingResponseDto updateBooking(
             @PathVariable int bookingId,
             @RequestHeader("X-Sharer-User-Id") int ownerId,
             @RequestParam("approved") boolean isApproved

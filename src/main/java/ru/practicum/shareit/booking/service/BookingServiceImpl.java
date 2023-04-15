@@ -1,29 +1,29 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.model.RequestState;
-import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserRepository;
+import ru.practicum.shareit.user.dao.UserRepository;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+
 @AllArgsConstructor
-@Slf4j
 @Transactional(readOnly = true)
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -38,15 +38,15 @@ public class BookingServiceImpl implements BookingService {
         Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(() -> new NoSuchElementException("Item id = " + bookingDto.getItemId() + " doesn't exist."));
         if (!item.getAvailable()) {
-            throw new ValidationException("Item id = " + bookingDto.getItemId() + " isn't available.");
+            throw new ValidationException("Item id = " + item.getId() + " isn't available.");
         }
         User booker = userRepository.findById(bookerId)
                 .orElseThrow(() -> new NoSuchElementException("User id = " + bookerId + " doesn't exist."));
 
-        Booking booking = BookingMapper.toBooking(bookingDto, item, booker);
+        Booking booking = BookingMapper.toBooking(bookingDto, booker, item);
         if (booking.getBooker().getId() == item.getOwner().getId()) {
             throw new NoSuchElementException("Booker id = " + booking.getBooker().getId() +
-                    " is the owner of the item id = " + item.getOwner().getId());
+                    " is the owner of the item id = " + item.getOwner().getId() + ".");
         }
         Booking intersectedBooking = bookingRepository
                 .findIntersectedBookingByItemId(booking.getItem().getId(), booking.getStart(), booking.getEnd());
@@ -72,53 +72,55 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Collection<BookingResponseDto> getAllBookings(int userId, RequestState state) {
-        if (!userRepository.existsById(userId)) {
-            throw new NoSuchElementException("User id = " + userId + " doesn't exist.");
+    public List<BookingResponseDto> getAllBookings(int bookerId, RequestState state, int from, int size) {
+        if (!userRepository.existsById(bookerId)) {
+            throw new NoSuchElementException("User id = " + bookerId + " doesn't exist.");
         }
+
         switch (state) {
             case ALL:
-                return bookingRepository.findBookingsByBooker_Id(userId, Sort.by(Sort.Direction.DESC, "start"))
+                return bookingRepository.findBookingsByBooker_Id(bookerId, PageRequest.of(from / size, size, Sort.by("start").descending()))
                         .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
             case PAST:
-                return bookingRepository.findPastBookings(userId, Sort.by(Sort.Direction.DESC, "start"))
+                return bookingRepository.findPastBookingsByBooker_Id(bookerId, PageRequest.of(from / size, size, Sort.by("start").descending()))
                         .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
             case FUTURE:
-                return bookingRepository.findFutureBookings(userId, Sort.by(Sort.Direction.DESC, "start"))
+                return bookingRepository.findFutureBookingsByBooker_Id(bookerId, PageRequest.of(from / size, size, Sort.by("start").descending()))
                         .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
             case CURRENT:
-                return bookingRepository.findCurrentBookings(userId, Sort.by(Sort.Direction.DESC, "start"))
+                return bookingRepository.findCurrentBookingsByBooker_Id(bookerId, PageRequest.of(from / size, size, Sort.by("start").descending()))
                         .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
             case WAITING:
             case REJECTED:
-                return bookingRepository.findBookingsByBooker_IdAndStatus(userId, BookingStatus.valueOf(String.valueOf(state)), Sort.by(Sort.Direction.DESC, "start"))
+                return bookingRepository.findBookingsByBooker_IdAndStatus(bookerId, BookingStatus.valueOf(String.valueOf(state)), PageRequest.of(from / size, size, Sort.by("start").descending()))
                         .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
             default:
-                throw new ValidationException("Unknown state: " + state);
+                throw new ValidationException("Unknown state: " + state + ".");
         }
     }
 
     @Override
-    public Collection<BookingResponseDto> getAllBookingsFromOwner(int userId, RequestState state) {
-        if (!userRepository.existsById(userId)) {
-            throw new NoSuchElementException("User id = " + userId + " doesn't exist.");
+    public List<BookingResponseDto> getAllBookingsFromOwner(int ownerId, RequestState state, int from, int size) {
+        if (!userRepository.existsById(ownerId)) {
+            throw new NoSuchElementException("User id = " + ownerId + " doesn't exist.");
         }
+
         switch (state) {
             case ALL:
-                return bookingRepository.findBookingsByItem_Owner_Id(userId, Sort.by(Sort.Direction.DESC, "start"))
+                return bookingRepository.findBookingsByItem_Owner_Id(ownerId, PageRequest.of(from / size, size, Sort.by("start").descending()))
                         .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
             case PAST:
-                return bookingRepository.findPastBookingsByItem_Owner_Id(userId, Sort.by(Sort.Direction.DESC, "start"))
+                return bookingRepository.findPastBookingsByItem_Owner_Id(ownerId, PageRequest.of(from / size, size, Sort.by("start").descending()))
                         .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
             case FUTURE:
-                return bookingRepository.findFutureBookingsByItem_Owner_Id(userId, Sort.by(Sort.Direction.DESC, "start"))
+                return bookingRepository.findFutureBookingsByItem_Owner_Id(ownerId, PageRequest.of(from / size, size, Sort.by("start").descending()))
                         .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
             case CURRENT:
-                return bookingRepository.findCurrentBookingsByItem_Owner_Id(userId, Sort.by(Sort.Direction.DESC, "start"))
+                return bookingRepository.findCurrentBookingsByItem_Owner_Id(ownerId, PageRequest.of(from / size, size, Sort.by("start").descending()))
                         .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
             case WAITING:
             case REJECTED:
-                return bookingRepository.findBookingsByItem_Owner_IdAndStatus(userId, BookingStatus.valueOf(String.valueOf(state)), Sort.by(Sort.Direction.DESC, "start"))
+                return bookingRepository.findBookingsByItem_Owner_IdAndStatus(ownerId, BookingStatus.valueOf(String.valueOf(state)), PageRequest.of(from / size, size, Sort.by("start").descending()))
                         .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
             default:
                 throw new ValidationException("Unknown state: " + state);
@@ -130,7 +132,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDto updateBooking(int bookingId, int ownerId, boolean isApproved) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NoSuchElementException("Booking with id = " + bookingId + " doesn't exist."));
+                .orElseThrow(() -> new NoSuchElementException("Booking id = " + bookingId + " doesn't exist."));
         if (booking.getItem().getOwner().getId() != ownerId) {
             throw new NoSuchElementException("User id = " + ownerId + " isn't an owner of the item.");
         }
