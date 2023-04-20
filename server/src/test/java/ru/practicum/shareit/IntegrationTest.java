@@ -35,11 +35,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @Rollback(false)
 @AllArgsConstructor(onConstructor_ = @Autowired)
 @SpringBootTest(properties = {
-                "spring.datasource.url=jdbc:postgresql://localhost:5432/test",
-                "spring.datasource.username=postgres",
-                "spring.datasource.password=postgres"
+        "spring.config.activate.on-profile=ci,test",
+        "spring.datasource.driver-class-name=org.h2.Driver",
+        "spring.datasource.url=jdbc:h2:mem:name",
+        "spring.datasource.username=test",
+        "spring.datasource.password=test"
 })
-//@SpringBootTest(properties = "spring.datasource.url=jdbc:h2:mem:test")
 public class IntegrationTest {
     private final EntityManager entityManager;
     private final UserService userService;
