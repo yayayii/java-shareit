@@ -1,4 +1,4 @@
-package ru.practicum.shareit.dto;
+package ru.practicum.shareit.dto.response.booking;
 
 
 public enum BookingStatus {

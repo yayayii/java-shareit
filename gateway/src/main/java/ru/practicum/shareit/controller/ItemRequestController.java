@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.client.ItemRequestClient;
-import ru.practicum.shareit.dto.ItemRequestRequestDto;
+import ru.practicum.shareit.dto.request.ItemRequestRequestDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;

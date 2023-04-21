@@ -1,8 +1,10 @@
-package ru.practicum.shareit.dto;
+package ru.practicum.shareit.dto.response.booking;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.dto.response.item.ItemShortResponseDto;
+import ru.practicum.shareit.dto.response.user.UserShortResponseDto;
 
 import java.time.LocalDateTime;
 

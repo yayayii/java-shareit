@@ -14,7 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.client.ItemRequestClient;
-import ru.practicum.shareit.dto.*;
+import ru.practicum.shareit.dto.request.ItemRequestRequestDto;
+import ru.practicum.shareit.dto.response.comment.CommentResponseDto;
+import ru.practicum.shareit.dto.response.item.ItemResponseDto;
+import ru.practicum.shareit.dto.response.request.ItemRequestFullResponseDto;
+import ru.practicum.shareit.dto.response.request.ItemRequestResponseDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

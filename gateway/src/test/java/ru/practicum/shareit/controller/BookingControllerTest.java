@@ -14,7 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.client.BookingClient;
-import ru.practicum.shareit.dto.*;
+import ru.practicum.shareit.dto.request.BookingRequestDto;
+import ru.practicum.shareit.dto.response.booking.BookingResponseDto;
+import ru.practicum.shareit.dto.response.booking.BookingStatus;
+import ru.practicum.shareit.dto.response.item.ItemShortResponseDto;
+import ru.practicum.shareit.dto.response.user.UserShortResponseDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

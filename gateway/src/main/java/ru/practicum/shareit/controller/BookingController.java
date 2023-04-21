@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.util.RequestState;
-import ru.practicum.shareit.dto.BookingRequestDto;
+import ru.practicum.shareit.dto.request.BookingRequestDto;
 import ru.practicum.shareit.client.BookingClient;
 
 import javax.validation.Valid;

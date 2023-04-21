@@ -1,4 +1,5 @@
 package ru.practicum.shareit.controller;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,7 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.client.ItemClient;
-import ru.practicum.shareit.dto.*;
+import ru.practicum.shareit.dto.request.CommentRequestDto;
+import ru.practicum.shareit.dto.request.ItemRequestDto;
+import ru.practicum.shareit.dto.response.booking.BookingShortResponseDto;
+import ru.practicum.shareit.dto.response.comment.CommentResponseDto;
+import ru.practicum.shareit.dto.response.item.ItemFullResponseDto;
+import ru.practicum.shareit.dto.response.item.ItemResponseDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -13,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.client.UserClient;
-import ru.practicum.shareit.dto.UserRequestDto;
-import ru.practicum.shareit.dto.UserResponseDto;
+import ru.practicum.shareit.dto.request.UserRequestDto;
+import ru.practicum.shareit.dto.response.user.UserResponseDto;
 
 import java.util.List;
 

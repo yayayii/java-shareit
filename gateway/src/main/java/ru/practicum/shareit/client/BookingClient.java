@@ -8,7 +8,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.util.RequestState;
-import ru.practicum.shareit.dto.BookingRequestDto;
+import ru.practicum.shareit.dto.request.BookingRequestDto;
 
 import java.util.Map;
 

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.client.UserClient;
-import ru.practicum.shareit.dto.UserRequestDto;
+import ru.practicum.shareit.dto.request.UserRequestDto;
 import ru.practicum.shareit.util.Create;
 import ru.practicum.shareit.util.Update;
 

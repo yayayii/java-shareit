@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.dto.CommentRequestDto;
-import ru.practicum.shareit.dto.ItemRequestDto;
+import ru.practicum.shareit.dto.request.CommentRequestDto;
+import ru.practicum.shareit.dto.request.ItemRequestDto;
 
 import java.util.Map;
 

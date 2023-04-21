@@ -39,7 +39,8 @@ import static org.junit.jupiter.api.Assertions.*;
         "spring.datasource.driver-class-name=org.h2.Driver",
         "spring.datasource.url=jdbc:h2:mem:name",
         "spring.datasource.username=test",
-        "spring.datasource.password=test"
+        "spring.datasource.password=test",
+        "server.port=9090"
 })
 public class IntegrationTest {
     private final EntityManager entityManager;
