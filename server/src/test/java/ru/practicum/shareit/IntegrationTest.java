@@ -30,7 +30,6 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @Transactional
 @Rollback(false)
 @AllArgsConstructor(onConstructor_ = @Autowired)

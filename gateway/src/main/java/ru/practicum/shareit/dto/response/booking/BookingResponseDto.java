@@ -8,7 +8,6 @@ import ru.practicum.shareit.dto.response.user.UserShortResponseDto;
 
 import java.time.LocalDateTime;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

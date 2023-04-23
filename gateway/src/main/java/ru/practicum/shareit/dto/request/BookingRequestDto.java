@@ -8,7 +8,6 @@ import ru.practicum.shareit.util.StartBeforeEndDateValid;
 import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

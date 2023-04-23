@@ -9,7 +9,6 @@ import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.stream.Collectors;
 
-
 @UtilityClass
 public class ItemRequestMapper {
     public ItemRequestFullResponseDto toFullItemRequestDto(ItemRequest itemRequest) {

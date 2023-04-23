@@ -10,7 +10,6 @@ import ru.practicum.shareit.dto.request.UserRequestDto;
 import ru.practicum.shareit.util.Create;
 import ru.practicum.shareit.util.Update;
 
-
 @AllArgsConstructor
 @Slf4j
 @RestController

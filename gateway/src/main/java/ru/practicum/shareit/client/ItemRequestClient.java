@@ -11,7 +11,6 @@ import ru.practicum.shareit.dto.request.ItemRequestRequestDto;
 
 import java.util.Map;
 
-
 @Service
 public class ItemRequestClient extends BaseClient {
     private static final String API_PREFIX = "/requests";

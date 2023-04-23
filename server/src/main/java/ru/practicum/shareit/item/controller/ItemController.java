@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.dto.item.ItemResponseDto;
 
 import java.util.List;
 
-
 @AllArgsConstructor
 @Slf4j
 @RestController

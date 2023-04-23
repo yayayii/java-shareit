@@ -10,7 +10,6 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findBookingsByBooker_Id(Long bookerId, Pageable pageable);

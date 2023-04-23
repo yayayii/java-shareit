@@ -7,7 +7,6 @@ import ru.practicum.shareit.item.dto.comment.CommentResponseDto;
 
 import java.util.List;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

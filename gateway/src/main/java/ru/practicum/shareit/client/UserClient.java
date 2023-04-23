@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.dto.request.UserRequestDto;
 
-
 @Service
 public class UserClient extends BaseClient {
     private static final String API_PREFIX = "/users";

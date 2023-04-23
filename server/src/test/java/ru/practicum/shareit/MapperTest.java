@@ -34,7 +34,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 public class MapperTest {
     private static LocalDateTime testLocalDateTime;
     private static User testUser;
